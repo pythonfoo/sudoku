@@ -1,12 +1,12 @@
 class View:
     def __init__(self):
-        ...
+        self.active = False
 
     async def start(self):
-        ...
+        self.active = True
 
     async def end(self):
-        ...
+        self.active = False
 
     async def update(self, dt):
         ...
