@@ -11,16 +11,30 @@ class Cell(View):
         self.y = y
         self.idx = 3 * y + x
         self.font = pg.font.SysFont("Vera", 22)
+        self.sfont = pg.font.SysFont("Vera", 12)
 
     async def draw(self, surface):
-        x, y = self.x, self.y
         block = surface.get_rect()
         surface.fill(pg.Color("#0ff00f"), block.inflate(-2, -2))
-        text = self.font.render(f"{self.cell.value}", True, pg.Color("#0000ff"))
-        surface.blit(
-            text,
-            text.get_rect(center=block.center),
-        )
+        if self.cell.value != 0:
+            text = self.font.render(f"{self.cell.value}", True, pg.Color("#0000ff"))
+            surface.blit(
+                text,
+                text.get_rect(center=block.center),
+            )
+        else:
+            width = surface.get_rect().width // 3
+            for x in range(3):
+                for y in range(3):
+                    n = x + y * 3 + 1
+                    if n not in self.cell.hopeful:
+                        continue
+                    mb = pg.Rect(x * width, y * width, width, width)
+                    text = self.sfont.render(f"{n}", True, pg.Color("#0000ff"))
+                    surface.blit(
+                        text,
+                        text.get_rect(center=mb.center),
+                    )
 
 
 class Block(View):
@@ -39,7 +53,6 @@ class Block(View):
                 )
 
     async def draw(self, surface):
-        x, y = self.x, self.y
         block = surface.get_rect()
         surface.fill(pg.Color("#000000"), block.inflate(-6, -6))
         text = self.font.render(f"{self.idx}", True, pg.Color("#0000ff"))
