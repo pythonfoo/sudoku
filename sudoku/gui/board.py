@@ -13,11 +13,14 @@ class Cell(View):
         self.font = pg.font.SysFont("Vera", 22)
         self.sfont = pg.font.SysFont("Vera", 12)
 
-    async def draw(self, surface):
+    async def draw(self, surface, highlight=False):
         block = surface.get_rect()
+        text_color = pg.Color("#0000ff")
+        if highlight:
+            pg.Color("#ff0000")
         surface.fill(pg.Color("#0ff00f"), block.inflate(-2, -2))
         if self.cell.value != 0:
-            text = self.font.render(f"{self.cell.value}", True, pg.Color("#0000ff"))
+            text = self.font.render(f"{self.cell.value}", True, text_color)
             surface.blit(
                 text,
                 text.get_rect(center=block.center),
@@ -30,7 +33,7 @@ class Cell(View):
                     if n not in self.cell.hopeful:
                         continue
                     mb = pg.Rect(x * width, y * width, width, width)
-                    text = self.sfont.render(f"{n}", True, pg.Color("#0000ff"))
+                    text = self.sfont.render(f"{n}", True, text_color)
                     surface.blit(
                         text,
                         text.get_rect(center=mb.center),
@@ -52,10 +55,16 @@ class Block(View):
                     Cell(x, y, self.field.get_cell(self.x * 3 + x, self.y * 3 + y))
                 )
 
-    async def draw(self, surface):
+    async def draw(self, surface, highlight=False):
         block = surface.get_rect()
-        surface.fill(pg.Color("#000000"), block.inflate(-6, -6))
-        text = self.font.render(f"{self.idx}", True, pg.Color("#0000ff"))
+        text_color = pg.Color("#0000ff")
+        bg_color = pg.Color("#000000")
+        if highlight:
+            text_color = pg.Color("#ff0000")
+            bg_color = pg.Color("#ffffff")
+
+        surface.fill(bg_color, block.inflate(-6, -6))
+        text = self.font.render(f"{self.idx}", True, text_color)
         surface.blit(
             text,
             text.get_rect(center=block.center),
@@ -67,7 +76,7 @@ class Block(View):
             cellsurface = surface.subsurface(
                 pg.Rect(cell_size * x + 3, cell_size * y + 3, cell_size, cell_size)
             )
-            await cell.draw(cellsurface)
+            await cell.draw(cellsurface, highlight=highlight)
 
 
 class Board(View):
@@ -103,7 +112,14 @@ class Board(View):
 
         for block in self.blocks:
             x, y = block.x, block.y
-            blocksurface = board_surface.subsurface(
-                pg.Rect(block_size * x, block_size * y, block_size, block_size)
-            )
-            await block.draw(blocksurface)
+            blockrect = pg.Rect(block_size * x, block_size * y, block_size, block_size)
+            blocksurface = board_surface.subsurface(blockrect)
+            mouse_pos = pg.mouse.get_pos()
+            print(mouse_pos)
+            mouse_over = blockrect.collidepoint(mouse_pos)
+            print(mouse_over)
+            await block.draw(blocksurface, highlight=mouse_over)
+
+    async def on_mouse_move(self, event):
+
+        ...

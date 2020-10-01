@@ -5,7 +5,7 @@ from .types import CellValue, CellPosition
 class Cell:
     __slots__ = ["_value", "position", "hopeful", "futile", "_debug"]
 
-    def __init__(self, value: CellValue = None, position: CellPosition = None):
+    def __init__(self, value: CellValue, position: CellPosition):
         self.position: CellPosition = position
         self.hopeful: set[CellValue] = (
             {1, 2, 3, 4, 5, 6, 7, 8, 9} if value == 0 else set()

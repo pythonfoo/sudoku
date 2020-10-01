@@ -1,3 +1,7 @@
+import pygame
+from .events import Event
+
+
 class View:
     def __init__(self):
         self.active = False
@@ -15,7 +19,18 @@ class View:
         ...
 
     async def handle_event(self, event):
-        ...
+        if event.type == pygame.QUIT:
+            return await self.on_quit(event)
+        elif event.type == pygame.MOUSEMOTION:
+            return await self.on_mouse_move(event)
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            return await self.on_mouse_down(event)
+        elif event.type == pygame.MOUSEBUTTONUP:
+            return await self.on_mouse_up(event)
+        elif event.type == pygame.KEYDOWN:
+            return await self.on_key_down(event)
+        elif event.type == pygame.KEYUP:
+            return await self.on_key_up(event)
 
     async def on_mouse_move(self, event):
         ...
@@ -24,4 +39,20 @@ class View:
         ...
 
     async def on_key_press(self, event):
+        ...
+
+    async def on_quit(self, event):
+        ...
+
+    async def on_mouse_down(self, event):
+        ...
+
+    async def on_mouse_up(self, event):
+        ...
+
+    async def on_key_down(self, event):
+        if event.key in (pygame.K_ESCAPE, pygame.K_q):
+            return Event.QUIT
+
+    async def on_key_up(self, event):
         ...

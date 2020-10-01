@@ -2,6 +2,7 @@ import pygame as pg
 import asyncio
 import time
 from .gui import Board, View
+from .gui.events import Event
 
 
 class Game:
@@ -37,7 +38,10 @@ class Game:
                 if event.type == pg.QUIT:
                     self.running = False
                 for view in reversed(self.stack):
-                    if await view.handle_event(event):
+                    event_response = await view.handle_event(event)
+                    if event_response:
+                        if event_response == Event.QUIT:
+                            self.running = False
                         break
             last, now = now, time.monotonic()
             dt = now - last
