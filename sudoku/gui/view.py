@@ -3,8 +3,9 @@ from .events import Event
 
 
 class View:
-    def __init__(self):
+    def __init__(self, surface: pygame.Surface):
         self.active = False
+        self.surface = surface
 
     async def start(self):
         self.active = True

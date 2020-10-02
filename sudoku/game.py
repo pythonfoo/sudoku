@@ -20,15 +20,17 @@ class Game:
         self.stack.append(element)
         await element.start()
 
+    async def setup_board(self):
+        await self.show(Board(self.screen))
+
     async def update(self, dt) -> None:
         await asyncio.gather(*[view.update(dt) for view in self.stack])
 
     async def draw(self) -> None:
-        self.bg = pg.Surface((640, 480))
-        self.bg.fill(pg.Color("#00ff00"))
+        self.screen.fill(pg.Color("#00ff00"))
         for view in self.stack:
-            await view.draw(self.bg)
-        self.screen.blit(self.bg, (0, 0))
+            await view.draw()
+        # self.screen.blit(self.bg, (0, 0))
         pg.display.flip()
 
     async def main_loop(self) -> None:
@@ -53,7 +55,7 @@ class Game:
 
 async def amain():
     g = Game()
-    await g.show(Board())
+    await g.setup_board()
     await g.main_loop()
 
 
