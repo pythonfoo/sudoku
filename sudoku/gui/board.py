@@ -1,6 +1,7 @@
 from .view import View
 from ..field import Field
 import pygame as pg
+import asyncio
 
 
 class Cell(View):
@@ -124,16 +125,40 @@ class Board(View):
 
         for block in self.blocks:
             mouse_pos = pg.mouse.get_pos()
-            print(mouse_pos)
             mouse_over = block.surface.get_rect(
                 topleft=block.surface.get_abs_offset()
             ).collidepoint(mouse_pos)
-            print(mouse_over)
             await block.draw(highlight=mouse_over)
 
     async def on_mouse_move(self, event):
 
         ...
+
+    async def on_key_down(self, event):
+        if event.key == pg.K_a:
+
+            async def foo():
+                print("reduce possibles")
+                for change in self.field.show_possibles():
+                    await asyncio.sleep(0.01)
+                    print(f"apply {change}")
+                    self.field.apply(change)
+
+            asyncio.create_task(foo())
+            return
+        if event.key == pg.K_s:
+
+            async def foo():
+                print("look for naked pairs")
+                for change in self.field.naked_pairs():
+                    await asyncio.sleep(0.01)
+                    print(f"apply {change}")
+                    self.field.apply(change)
+
+            asyncio.create_task(foo())
+            return
+        if event.key in (pg.K_ESCAPE, pg.K_q):
+            return Event.QUIT
 
 
 class GameView(View):

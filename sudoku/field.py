@@ -1,6 +1,7 @@
 from .cell import Cell
 from .types import CellPosition
 from typing import NamedTuple
+from collections import defaultdict
 
 
 class Action(NamedTuple):
@@ -49,21 +50,42 @@ class Field:
                         if member == other_member:
                             continue
                         if member.value in other_member.hopeful:
-                            actions.append(
-                                Action(
-                                    action="remove_possible",
-                                    value=member.value,
-                                    cell=other_member,
-                                    reason=f"value {member.value} is present in the same {type} at {member.position}",
-                                )
+                            yield Action(
+                                action="remove_possible",
+                                value=member.value,
+                                cell=other_member,
+                                reason=f"value {member.value} is present in the same {type} at {member.position}",
                             )
-        return actions
+                            # actions.append( )
+        # return actions
 
-    def apply(self, actions):
-        for action in actions:
-            if action.action == "remove_possible":
-                action.cell.hopeful -= {action.value}
-                action.cell._debug.append(action.reason)
+    def naked_pairs(self):
+        for type in ["row", "column", "block"]:
+            for idx in range(9):
+                group = self.get_group(type, idx)
+                pairs = defaultdict(list)
+                for member in group:
+                    if len(member.hopeful) == 2:
+                        pairs[tuple(sorted(member.hopeful))].append(member)
+                for to_be_removed_tuple, except_members in pairs.items():
+                    if len(except_members) != 2:
+                        continue
+                    for member in group:
+                        if member in except_members:
+                            continue
+                        for to_be_removed in to_be_removed_tuple:
+                            if to_be_removed in member.hopeful:
+                                yield Action(
+                                    action="remove_possible",
+                                    value=to_be_removed,
+                                    cell=member,
+                                    reason=f"naked pair in same {type} {to_be_removed_tuple!r} on {list(e.position for e in except_members)}",
+                                )
+
+    def apply(self, action):
+        if action.action == "remove_possible":
+            action.cell.hopeful -= {action.value}
+            action.cell._debug.append(action.reason)
 
     def __str__(self) -> str:
         light_row = f"+{'   +'*9}\n"
