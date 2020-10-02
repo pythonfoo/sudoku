@@ -125,7 +125,9 @@ class Board(View):
         for block in self.blocks:
             mouse_pos = pg.mouse.get_pos()
             print(mouse_pos)
-            mouse_over = self.surface.get_rect().collidepoint(mouse_pos)
+            mouse_over = block.surface.get_rect(
+                topleft=block.surface.get_abs_offset()
+            ).collidepoint(mouse_pos)
             print(mouse_over)
             await block.draw(highlight=mouse_over)
 
