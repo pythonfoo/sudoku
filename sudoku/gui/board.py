@@ -2,6 +2,7 @@ from .view import View
 from ..field import Field
 import pygame as pg
 import asyncio
+from .events import Event
 
 
 class Cell(View):
@@ -151,6 +152,17 @@ class Board(View):
             async def foo():
                 print("look for naked pairs")
                 for change in self.field.naked_pairs():
+                    await asyncio.sleep(0.01)
+                    print(f"apply {change}")
+                    self.field.apply(change)
+
+            asyncio.create_task(foo())
+            return
+        if event.key == pg.K_d:
+
+            async def foo():
+                print("look for singles")
+                for change in self.field.singles():
                     await asyncio.sleep(0.01)
                     print(f"apply {change}")
                     self.field.apply(change)
