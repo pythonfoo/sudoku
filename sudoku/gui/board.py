@@ -137,15 +137,32 @@ class Board(View):
 
     async def on_key_down(self, event):
         if event.key == pg.K_a:
+            print("auto solve")
 
-            async def foo():
-                print("reduce possibles")
-                for change in self.field.show_possibles():
-                    await asyncio.sleep(0.01)
-                    print(f"apply {change}")
-                    self.field.apply(change)
+            async def auto_solve():
+                try_again = True
+                while try_again:
+                    print("go")
+                    try_again = False
 
-            asyncio.create_task(foo())
+                    for solver in [
+                        "solved",
+                        "show_possibles",
+                        "singles",
+                        "naked_pairs",
+                        "naked_triples",
+                    ]:
+                        print(solver)
+
+                        for change in getattr(self.field, solver)():
+                            try_again = True
+                            await asyncio.sleep(0.01)
+                            print(f"apply {change}")
+                            self.field.apply(change)
+                        if try_again:
+                            break
+
+            asyncio.create_task(auto_solve())
             return
         if event.key == pg.K_s:
 
