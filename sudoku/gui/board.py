@@ -95,7 +95,7 @@ class Board(View):
         )
         self.font = pg.font.SysFont("Vera", 42)
         self.blocks = []
-
+        self._idx = 0
         total_size = surface.get_rect()
         board_size = min(total_size.width * 2 // 3, total_size.height)
         self._board = pg.Rect(0, total_size.height - board_size, board_size, board_size)
@@ -140,27 +140,33 @@ class Board(View):
             print("auto solve")
 
             async def auto_solve():
-                try_again = True
-                while try_again:
-                    print("go")
-                    try_again = False
+                # try_again = True
+                # while try_again:
+                print("go")
+                try_again = False
 
-                    for solver in [
-                        "solved",
-                        "show_possibles",
-                        "singles",
-                        "naked_pairs",
-                        "naked_triples",
-                    ]:
-                        print(solver)
+                for solver in [
+                    "solved",
+                    "show_possibles",
+                    "singles",
+                    "naked_pairs",
+                    "naked_triples",
+                ]:
+                    print(solver)
 
-                        for change in getattr(self.field, solver)():
-                            try_again = True
-                            await asyncio.sleep(0.01)
-                            print(f"apply {change}")
-                            self.field.apply(change)
-                        if try_again:
-                            break
+                    for change in getattr(self.field, solver)():
+                        try_again = True
+                        await asyncio.sleep(0.01)
+                        print(f"{change.reason}")
+                        self.field.apply(change)
+                        if solver in ("solved", "singles"):
+                            for change in self.field.show_possibles():
+                                self.field.apply(change)
+                    if try_again:
+                        break
+                if try_again:
+                    pg.image.save(self.surface, f"/tmp/img{self._idx}.png")
+                    self._idx += 1
 
             asyncio.create_task(auto_solve())
             return

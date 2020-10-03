@@ -123,9 +123,10 @@ class Field:
                 triples[tuple(sorted(member.hopeful))].append(member)
             if len(member.hopeful) == 2:
                 for missing_value in {1, 2, 3, 4, 5, 6, 7, 8} - member.hopeful:
-                    triples[tuple(sorted(member.hopeful + {missing_value}))].append(
+                    triples[tuple(sorted(member.hopeful | {missing_value}))].append(
                         member
                     )
+
         for to_be_removed_tuple, except_members in triples.items():
             if len(except_members) != 3:
                 continue
@@ -166,7 +167,7 @@ class Field:
                 action="set_number",
                 value=single,
                 cell=members[0],
-                reason=f"single {single} found in {group} at {members[0].position}",
+                reason=f"single {single} found in {type} at {members[0].position}",
             )
 
     def apply(self, action):

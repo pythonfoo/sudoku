@@ -22,7 +22,6 @@ class Cell:
 
     @value.setter
     def value(self, value):
-        print("setter")
         assert value in self.hopeful, f"Cell {self.position} can't be set to {value}"
         assert value not in self.futile, f"Cell {self.position} can't be set to {value}"
         self._value = value
