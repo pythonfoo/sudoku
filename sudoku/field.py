@@ -116,6 +116,18 @@ class Field:
                         )
 
     @group_generator()
+    def solved(self, *, type, idx, group):
+        for member in group:
+            if len(member.hopeful) == 1:
+                value = list(member.hopeful)[0]
+                yield Action(
+                    action="set_number",
+                    value=value,
+                    cell=member,
+                    reason=f"solved cell {value} found at {member.position}",
+                )
+
+    @group_generator()
     def singles(self, *, type, idx, group):
         possibilities = defaultdict(list)
         for member in group:

@@ -162,7 +162,7 @@ class Board(View):
 
             async def foo():
                 print("look for singles")
-                for change in self.field.singles():
+                for change in self.field.solved():
                     await asyncio.sleep(0.01)
                     print(f"apply {change}")
                     self.field.apply(change)
