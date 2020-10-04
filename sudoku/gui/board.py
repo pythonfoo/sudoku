@@ -1,8 +1,11 @@
-from .view import View
-from ..field import Field
-import pygame as pg
 import asyncio
+from pathlib import Path
+
+import pygame as pg
+
+from ..field import Field
 from .events import Event
+from .view import View
 
 
 class Cell(View):
@@ -151,12 +154,13 @@ class Board(View):
                     "singles",
                     "naked_pairs",
                     "naked_triples",
+                    "pointing_pairs",
                 ]:
                     print(solver)
 
                     for change in getattr(self.field, solver)():
                         try_again = True
-                        await asyncio.sleep(0.01)
+                        await asyncio.sleep(0.0)
                         print(f"{change.reason}")
                         self.field.apply(change)
                         if solver in ("solved", "singles"):
@@ -171,27 +175,14 @@ class Board(View):
             asyncio.create_task(auto_solve())
             return
         if event.key == pg.K_s:
-
-            async def foo():
-                print("look for naked pairs")
-                for change in self.field.naked_pairs():
-                    await asyncio.sleep(0.01)
-                    print(f"apply {change}")
-                    self.field.apply(change)
-
-            asyncio.create_task(foo())
+            print("save")
+            self.field.save(Path("/tmp/sudoku.savegame"))
             return
-        if event.key == pg.K_d:
-
-            async def foo():
-                print("look for singles")
-                for change in self.field.solved():
-                    await asyncio.sleep(0.01)
-                    print(f"apply {change}")
-                    self.field.apply(change)
-
-            asyncio.create_task(foo())
+        if event.key == pg.K_l:
+            print("load")
+            self.field.load(Path("/tmp/sudoku.savegame"))
             return
+
         if event.key in (pg.K_ESCAPE, pg.K_q):
             return Event.QUIT
 

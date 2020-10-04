@@ -26,3 +26,6 @@ class CellPosition(NamedTuple):
         x = value % 9
         y = value // 9
         return CellPosition(x, y)
+
+    def as_int(self):
+        return self.y * 9 + self.x

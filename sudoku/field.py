@@ -1,9 +1,13 @@
+import json
+import random
+from collections import defaultdict
+from pathlib import Path
+from typing import NamedTuple
+
+import wrapt
+
 from .cell import Cell
 from .types import CellPosition
-from typing import NamedTuple
-from collections import defaultdict
-import wrapt
-import random
 
 
 class Action(NamedTuple):
@@ -170,12 +174,62 @@ class Field:
                 reason=f"single {single} found in {type} at {members[0].position}",
             )
 
+    @group_generator(group_types=["block"])
+    def pointing_pairs(self, *, type, idx, group):
+        possibilities = defaultdict(list)
+        for member in group:
+            for possible_number in member.hopeful:
+                possibilities[possible_number].append(member)
+
+        for pointing_pair, members in possibilities.items():
+            for rc in ("row", "column"):
+                if (
+                    len(row_or_column := {getattr(m.position, rc) for m in members})
+                    == 1
+                ):
+                    for member in self.get_group(type=rc, id=row_or_column.pop()):
+                        if member in members:
+                            continue
+                        if pointing_pair not in member.hopeful:
+                            continue
+                        yield Action(
+                            action="remove_possible",
+                            value=pointing_pair,
+                            cell=member,
+                            reason=f"pointing pair in same {rc} {list(m.position for m in members)}",
+                        )
+
     def apply(self, action):
         if action.action == "remove_possible":
             action.cell.hopeful -= {action.value}
             action.cell._debug.append(action.reason)
         elif action.action == "set_number":
             action.cell.value = action.value
+
+    def save(self, path: Path):
+        cells = [
+            json.dumps(
+                dict(
+                    value=cell.value,
+                    position=cell.position.as_int(),
+                    hopeful=list(cell.hopeful),
+                )
+            )
+            for cell in self.cells
+        ]
+        path.write_text("\n".join(cells))
+
+    def load(self, path: Path):
+        cell_definition_lookup = dict()
+        for cell_line in path.read_text().splitlines():
+            cell_definiton = json.loads(cell_line)
+            cell_definition_lookup[cell_definiton["position"]] = cell_definiton
+        assert len(cell_definition_lookup) == 81
+        for cell in self.cells:
+            cell_definiton = cell_definition_lookup[cell.position.as_int()]
+            cell._value = cell_definiton["value"]
+            cell.hopeful |= {1, 2, 3, 4, 5, 6, 7, 8, 9}
+            cell.hopeful &= set(cell_definiton["hopeful"])
 
     def __str__(self) -> str:
         light_row = f"+{'   +'*9}\n"
