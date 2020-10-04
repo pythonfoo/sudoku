@@ -1,5 +1,5 @@
 from __future__ import annotations
-from .types import CellValue, CellPosition
+from .types import CellValue, CellPosition, Set, List, Tuple
 
 
 class Cell:
@@ -7,12 +7,12 @@ class Cell:
 
     def __init__(self, value: CellValue, position: CellPosition):
         self.position: CellPosition = position
-        self.hopeful: set[CellValue] = (
+        self.hopeful: Set[CellValue] = (
             {1, 2, 3, 4, 5, 6, 7, 8, 9} if value == 0 else set()
         )  # numbers that are still possible
-        self.futile: set[CellValue] = set()  # numbers that are not possible anymore
-        self._debug: list[
-            tuple[CellValue, str]
+        self.futile: Set[CellValue] = set()  # numbers that are not possible anymore
+        self._debug: List[
+            Tuple[CellValue, str]
         ] = list()  # list of reason why a number is not possible anymore
         self._value = value
 
