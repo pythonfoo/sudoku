@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "sudoku"
+version = "0.1.0"
+description = ""
+authors = ["Olaf Gladis <github@gladis.org>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pydantic = "^1.6.1"
+pygame = "^1.9.6"
+wrapt = "^1.12.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.1.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
