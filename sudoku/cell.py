@@ -1,5 +1,6 @@
 from __future__ import annotations
-from .types import CellValue, CellPosition, Set, List, Tuple
+
+from .types import CellPosition, CellValue, List, Set, Tuple
 
 
 class Cell:
