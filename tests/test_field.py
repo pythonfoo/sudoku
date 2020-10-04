@@ -1,5 +1,7 @@
-from typing import List, NamedTuple
 from dataclasses import dataclass
+from pathlib import Path
+from typing import List, NamedTuple
+
 import pytest
 from sudoku.field import Field
 
@@ -130,4 +132,26 @@ def test_naked_triples():
     assert actions[2].value == 5
 
 
-# "naked_triples",
+def test_pointing_pairs():
+    f = Field("0" * 81)
+    f.load(Path("tests/savegames/pointing_pairs.savegame"))
+
+    actions = list(
+        sorted(
+            f.pointing_pairs(
+                idx=0,
+            )
+        )
+    )
+    print(actions)
+    assert len(actions) == 3
+    assert actions[0].cell == f.get_cell(3, 0)
+    assert actions[0].value == 2
+    assert actions[1].cell == f.get_cell(4, 0)
+    assert actions[1].value == 2
+    assert actions[2].cell == f.get_cell(5, 0)
+    assert actions[2].value == 2
+
+
+if __name__ == "__main__":
+    pytest.main(["-k", "field"])

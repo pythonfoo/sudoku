@@ -157,17 +157,21 @@ class Board(View):
                     "pointing_pairs",
                 ]:
                     print(solver)
-
-                    for change in getattr(self.field, solver)():
-                        try_again = True
-                        await asyncio.sleep(0.0)
-                        print(f"{change.reason}")
-                        self.field.apply(change)
-                        if solver in ("solved", "singles"):
-                            for change in self.field.show_possibles():
-                                self.field.apply(change)
-                    if try_again:
-                        break
+                    try:
+                        changes = list(getattr(self.field, solver)())
+                        print(len(changes))
+                        for change in getattr(self.field, solver)():
+                            try_again = True
+                            await asyncio.sleep(0.0)
+                            print(f"{change.reason}")
+                            self.field.apply(change)
+                            if solver in ("solved", "singles"):
+                                for change in self.field.show_possibles():
+                                    self.field.apply(change)
+                        if try_again:
+                            break
+                    except Exception as e:
+                        print(e)
                 if try_again:
                     pg.image.save(self.surface, f"/tmp/img{self._idx}.png")
                     self._idx += 1

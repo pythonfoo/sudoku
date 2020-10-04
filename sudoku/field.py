@@ -196,7 +196,7 @@ class Field:
                             action="remove_possible",
                             value=pointing_pair,
                             cell=member,
-                            reason=f"pointing pair in same {rc} {list(m.position for m in members)}",
+                            reason=f"pointing pair {pointing_pair} in same {rc} {list(m.position for m in members)}",
                         )
 
     def apply(self, action):

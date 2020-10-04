@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from .types import CellPosition, CellValue, List, Set, Tuple
+from typing import List, Set, Tuple
+
+from .types import CellPosition, CellValue
 
 
 class Cell:
@@ -33,3 +35,6 @@ class Cell:
 
     def __repr__(self):
         return f"Cell(position={self.position}, value={self._value!r}, hopeful={self.hopeful}, futile={self.futile}, )"
+
+    def __lt__(self, other):
+        return self.position.as_int() < other.position.as_int()
