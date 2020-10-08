@@ -7,7 +7,7 @@ authors = ["Olaf Gladis <github@gladis.org>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 pydantic = "^1.6.1"
-pygame = "^1.9.6"
+pygame = "2.0.0.dev10"
 wrapt = "^1.12.1"
 
 [tool.poetry.dev-dependencies]
