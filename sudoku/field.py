@@ -258,6 +258,28 @@ class Field:
                             reason=f"pointing pair {pointing_pair} in same {rc} {list(m.position for m in members)}",
                         )
 
+    @group_generator(group_types=["row", "column"])
+    def box_line_reduction(self, *, type, idx, group):
+        possibilities = defaultdict(list)
+        for member in group:
+            for possible_number in member.hopeful:
+                possibilities[possible_number].append(member)
+
+        for single_box_member, members in possibilities.items():
+            if len(box := {m.position.block for m in members}) == 1:
+                box_id = box.pop()
+                for member in self.get_group(type="block", id=box_id):
+                    if member in members:
+                        continue
+                    if single_box_member not in member.hopeful:
+                        continue
+                    yield Action(
+                        action="remove_possible",
+                        value=single_box_member,
+                        cell=member,
+                        reason=f"box reduction {single_box_member} only in box {box_id} {list(m.position for m in members)}",
+                    )
+
     def apply(self, action):
         if action.action == "remove_possible":
             action.cell.hopeful -= {action.value}
