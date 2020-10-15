@@ -1,6 +1,7 @@
 import json
 import random
 from collections import defaultdict
+from itertools import combinations
 from pathlib import Path
 from typing import NamedTuple
 
@@ -34,12 +35,12 @@ def group_generator(
             )
             return
         if "group_types" in kwargs:
-            group_types = list(kwargs["group_types"])
+            group_types = list(kwargs.pop("group_types"))
         elif "group_type" in kwargs:
-            group_types = [kwargs["group_type"]]
+            group_types = [kwargs.pop("group_type")]
 
         if "indices" in kwargs:
-            indices = list(kwargs["indices"])
+            indices = list(kwargs.pop("indices"))
         elif "idx" in kwargs:
             indices = [kwargs.pop("idx")]
 
@@ -176,6 +177,34 @@ class Field:
                                 cell=cell_to_clean,
                                 reason=f"hidden pair in same {type} { {possible_hidden_pair, other_possible_pair}!r} on {list(e.position for e in pairs[possible_hidden_pair])}",
                             )
+
+    @group_generator()
+    def hidden_tripples(self, *, type, idx, group):
+        tripples = defaultdict(set)
+        for member in group:
+            for possible in member.hopeful:
+                tripples[possible].add(member)
+        for key in list(tripples.keys()):
+            if len(tripples[key]) > 3:
+                del tripples[key]
+
+        for possible_hidden_tripple in combinations(tripples.keys(), 3):
+            cells_of_triplet = set()
+            for possible_safe_value in possible_hidden_tripple:
+                cells_of_triplet |= tripples[possible_safe_value]
+            if len(cells_of_triplet) > 3:
+                continue
+
+            for cell_to_clean in cells_of_triplet:
+                for number_to_clean in cell_to_clean.hopeful - set(
+                    possible_hidden_tripple
+                ):
+                    yield Action(
+                        action="remove_possible",
+                        value=number_to_clean,
+                        cell=cell_to_clean,
+                        reason=f"hidden tripple in same {type} { {possible_hidden_tripple}!r} on {list(e.position for e in cells_of_triplet)}",
+                    )
 
     @group_generator()
     def solved(self, *, type, idx, group):

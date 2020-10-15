@@ -155,6 +155,7 @@ class Board(View):
                     "naked_pairs",
                     "naked_triples",
                     "hidden_pairs",
+                    "hidden_tripples",
                     "pointing_pairs",
                 ]:
                     print(solver)
