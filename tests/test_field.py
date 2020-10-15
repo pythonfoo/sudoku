@@ -159,13 +159,7 @@ def test_hidden_pairs():
     """
     f = Field("0" * 81)
     f.load(Path("tests/savegames/hidden_pairs.savegame"))
-    actions = list(
-        sorted(
-            f.hidden_pairs(
-                idx=0,
-            )
-        )
-    )
+    actions = list(sorted(f.hidden_pairs(idx=0, group_types=["row"])))
     print(actions)
     assert len(actions) == 9
 
@@ -176,6 +170,26 @@ def test_hidden_pairs():
     assert (
         values.intersection({6, 7}) == set()
     ), "don't remove members of the hidden pair"
+
+
+def test_hidden_tripples():
+    """
+    identify hidden tripple 6,7 in first row (idx 7 and 8)
+    """
+    f = Field("0" * 81)
+    f.load(Path("tests/savegames/hidden_tripples.savegame"))
+    actions = list(sorted(f.hidden_tripples()))
+    for action in actions:
+        print(f"{action.value} {action.reason}")
+    assert len(actions) == 9
+
+    positions = set(a.cell.position.as_int() for a in actions)
+    assert len(positions) == 3
+    values = set(a.value for a in actions)
+
+    assert (
+        values.intersection({2, 5, 6}) == set()
+    ), "don't remove members of the hidden tripple"
 
 
 if __name__ == "__main__":
