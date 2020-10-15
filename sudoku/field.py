@@ -44,7 +44,6 @@ def group_generator(
         elif "idx" in kwargs:
             indices = [kwargs.pop("idx")]
 
-        # if kwargs.get("randomize"):
         random.shuffle(group_types)
         random.shuffle(indices)
 
