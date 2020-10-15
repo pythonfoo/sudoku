@@ -18,7 +18,7 @@ class Action(NamedTuple):
 
 
 def group_generator(
-    group_types=["row", "column", "block"], indices=[1, 2, 3, 4, 5, 6, 7, 8, 9]
+    group_types=["row", "column", "block"], indices=[0, 1, 2, 3, 4, 5, 6, 7, 8]
 ):
     @wrapt.decorator
     def my_decorator(wrapped, instance, args, kwargs):
