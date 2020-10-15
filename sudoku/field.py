@@ -78,7 +78,7 @@ class Field:
         test = {
             "row": lambda cell, id: cell.position.row == id,
             "column": lambda cell, id: cell.position.column == id,
-            "block": lambda cell, id: cell.position.group == id,
+            "block": lambda cell, id: cell.position.block == id,
         }[type]
         return {cell for cell in self.cells if test(cell, id)}
 
