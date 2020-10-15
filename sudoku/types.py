@@ -10,7 +10,7 @@ class CellPosition(NamedTuple):
     y: CellValue
 
     @property
-    def group(self) -> CellValue:
+    def block(self) -> CellValue:
         return ((self.x) // 3) + (((self.y) // 3)) * 3
 
     @property

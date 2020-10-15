@@ -157,6 +157,7 @@ class Board(View):
                     "hidden_pairs",
                     "hidden_tripples",
                     "pointing_pairs",
+                    "box_line_reduction",
                 ]:
                     print(solver)
                     try:
