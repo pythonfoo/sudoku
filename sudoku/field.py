@@ -56,6 +56,11 @@ def group_generator(
 
 
 class Field:
+    """
+    The Field is a collection of 81 cells of a sudoku puzzle.
+
+    Is contains some methods to interact with them.
+    """
 
     __slots__ = ["cells"]
 
@@ -68,19 +73,31 @@ class Field:
         ]
 
     def get_cell(self, x, y):
+        """
+        returns the Cell with the given x and y coordinate.
+        """
         index = x + 9 * y
         return self.cells[index]
 
     def set_cell(self, x, y, value):
+        """
+        Sets the value of a cell with the given x and y coordinate.
+        """
         self.get_cell(x, y).value = value
 
-    def get_group(self, type, id):
+    def get_group(self, type, idx):
+        """
+        returns a set of cells of the same group.
+
+        `type` is either a `row`, `column`, or `block`
+        `idx` is the index of the group regarding to the :class:`sudoku.types.CellPosition`
+        """
         test = {
-            "row": lambda cell, id: cell.position.row == id,
-            "column": lambda cell, id: cell.position.column == id,
-            "block": lambda cell, id: cell.position.block == id,
+            "row": lambda cell, idx: cell.position.row == idx,
+            "column": lambda cell, idx: cell.position.column == idx,
+            "block": lambda cell, idx: cell.position.block == idx,
         }[type]
-        return {cell for cell in self.cells if test(cell, id)}
+        return {cell for cell in self.cells if test(cell, idx)}
 
     @group_generator()
     def show_possibles(self, *, type, idx, group):
