@@ -6,6 +6,17 @@ from .types import CellPosition, CellValue
 
 
 class Cell:
+    """
+    The Cell stores the value of a cell, its position, possible values and contains
+    list of reasons why a number is not possible anymore.
+
+    It is not aware of any other Cell.
+
+    `hopeful` is a set of all possible values that this cell could have in the future.
+
+    `_debug` is a list of strings that explain why certain numbers are not possible anymore.
+    """
+
     __slots__ = ["_value", "position", "hopeful", "futile", "_debug"]
 
     def __init__(self, value: CellValue, position: CellPosition):
@@ -21,6 +32,21 @@ class Cell:
 
     @property
     def value(self):
+        """
+        represents the cell value
+         - value is 0 when the cell is not set
+         - otherwise it can be any number from 1 to 9
+
+        When the cell value will be set:
+
+        It will raise an AssertionError when the value is not in self.hopeful
+        It will raise an AssertionError when the value is in self.futile
+
+        It cannot be set to 0 after a value has been asigned. You need to use
+        the private property `_value` the change it.
+
+        After the value has been asigned, the hopeful set will be cleared.
+        """
         return self._value
 
     @value.setter
