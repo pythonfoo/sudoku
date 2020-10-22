@@ -13,8 +13,6 @@ A sudoku game consists of a {ref}`Field <field>` with 81 {ref}`Cells <cell>`. 9 
 (cell)=
 ## The Cell
 
-
-
 {class}`sudoku.cell.Cell`
 
 
@@ -23,3 +21,5 @@ A sudoku game consists of a {ref}`Field <field>` with 81 {ref}`Cells <cell>`. 9 
 
 (field)=
 ## The Field
+
+{class}`sudoku.field.Field`
