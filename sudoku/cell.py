@@ -17,10 +17,10 @@ class Cell:
     `_debug` is a list of strings that explain why certain numbers are not possible anymore.
     """
 
-    __slots__ = ["_value", "position", "hopeful", "futile", "_debug"]
+    __slots__ = ["_value", "_position", "hopeful", "futile", "_debug"]
 
     def __init__(self, value: CellValue, position: CellPosition):
-        self.position: CellPosition = position
+        self._position: CellPosition = position
         self.hopeful: Set[CellValue] = (
             {1, 2, 3, 4, 5, 6, 7, 8, 9} if value == 0 else set()
         )  # numbers that are still possible
@@ -29,6 +29,18 @@ class Cell:
             Tuple[CellValue, str]
         ] = list()  # list of reason why a number is not possible anymore
         self._value = value
+
+    @property
+    def position(self):
+        """
+        represents the position of the cell
+
+        has sub properties for
+        - row
+        - column
+        - block
+        """
+        return self._position
 
     @property
     def value(self):
