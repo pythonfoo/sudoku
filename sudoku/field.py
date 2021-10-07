@@ -275,7 +275,7 @@ class Field:
                     len(row_or_column := {getattr(m.position, rc) for m in members})
                     == 1
                 ):
-                    for member in self.get_group(type=rc, id=row_or_column.pop()):
+                    for member in self.get_group(type=rc, idx=row_or_column.pop()):
                         if member in members:
                             continue
                         if pointing_pair not in member.hopeful:
