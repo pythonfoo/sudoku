@@ -10,7 +10,7 @@ class Game:
         pg.init()
         pg.font.init()
         pg.display.set_caption("Pyond client")
-        self.screen = pg.display.set_mode((640, 480))
+        self.screen = pg.display.set_mode((1024, 768))
         self.running = True
         self.stack = []
 
