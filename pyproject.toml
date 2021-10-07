@@ -7,7 +7,7 @@ authors = ["Olaf Gladis <github@gladis.org>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 pydantic = "^1.6.1"
-pygame = "2.0.0.dev10"
+pygame = "^2.0.2.dev3"
 wrapt = "^1.12.1"
 
 [tool.poetry.dev-dependencies]
@@ -15,6 +15,7 @@ pytest = "^6.1.0"
 Sphinx = "^3.2.1"
 furo = "^2020.10.15-beta.13"
 myst-parser = "^0.12.10"
+commonmark = "^0.9.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

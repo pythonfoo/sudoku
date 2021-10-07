@@ -10,7 +10,7 @@ class Game:
         pg.init()
         pg.font.init()
         pg.display.set_caption("Pyond client")
-        self.screen = pg.display.set_mode((640, 480))
+        self.screen = pg.display.set_mode((1024, 768))
         self.running = True
         self.stack = []
 
@@ -27,7 +27,7 @@ class Game:
         await asyncio.gather(*[view.update(dt) for view in self.stack])
 
     async def draw(self) -> None:
-        self.screen.fill(pg.Color("#00ff00"))
+        self.screen.fill(pg.Color("#ffeefe"))
         for view in self.stack:
             await view.draw()
         # self.screen.blit(self.bg, (0, 0))
