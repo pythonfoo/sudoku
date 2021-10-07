@@ -27,7 +27,7 @@ class Game:
         await asyncio.gather(*[view.update(dt) for view in self.stack])
 
     async def draw(self) -> None:
-        self.screen.fill(pg.Color("#00ff00"))
+        self.screen.fill(pg.Color("#ffeefe"))
         for view in self.stack:
             await view.draw()
         # self.screen.blit(self.bg, (0, 0))
