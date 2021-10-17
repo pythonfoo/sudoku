@@ -21,12 +21,12 @@ class Cell:
 
     def __init__(self, value: CellValue, position: CellPosition):
         self._position: CellPosition = position
-        self.hopeful: Set[CellValue] = (
+        self.hopeful: set[CellValue] = (
             {1, 2, 3, 4, 5, 6, 7, 8, 9} if value == 0 else set()
         )  # numbers that are still possible
-        self.futile: Set[CellValue] = set()  # numbers that are not possible anymore
-        self._debug: List[
-            Tuple[CellValue, str]
+        self.futile: set[CellValue] = set()  # numbers that are not possible anymore
+        self._debug: list[
+            tuple[CellValue, str]
         ] = list()  # list of reason why a number is not possible anymore
         self._value = value
 
