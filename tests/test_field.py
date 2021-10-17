@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import List, NamedTuple
 
 import pytest
+import sudoku
 from sudoku.field import Field
 
 
@@ -205,6 +206,24 @@ def test_box_line_reduction():
 
     assert len(values) == 1
     assert actions[0].value == 4
+
+
+def test_xwing():
+    f = Field("0" * 81)
+    f.load(Path("tests/savegames/xwing.savegame"))
+    actions = list(sorted(f.xwing()))
+    for action in actions:
+        print(
+            f"{action.action} {action.value} from {action.cell.position} {action.reason}"
+        )
+    assert len(actions) == 6
+
+    positions = set(a.cell.position.as_int() for a in actions)
+    assert len(positions) == 6
+    values = set(a.value for a in actions)
+
+    assert len(values) == 1
+    assert actions[0].value == 7
 
 
 if __name__ == "__main__":
