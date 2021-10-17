@@ -9,12 +9,11 @@ python = "^3.8"
 pydantic = "^1.6.1"
 pygame = "^2.0.2.dev3"
 wrapt = "^1.12.1"
+myst-parser = {git = "https://github.com/executablebooks/MyST-Parser.git"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.1.0"
-Sphinx = "^3.2.1"
-furo = "^2020.10.15-beta.13"
-myst-parser = "^0.12.10"
+furo = "*"
 commonmark = "^0.9.1"
 
 [build-system]
