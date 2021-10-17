@@ -8,28 +8,43 @@ from typing import NamedTuple
 import wrapt
 
 from .cell import Cell
-from .types import CellPosition
+from .types import CellPosition, CellValue
 
 
 class Action(NamedTuple):
     """
-    Action is a NamedTuple that contains suggested changes to a {class}`sudoku.field.Field`
-    
+    Action is a NamedTuple that contains suggested changes to a :class:`sudoku.field.Field`
+
     `action` is either "remove_possible" or "set_number"
-    
+
     `value` is an interger from 1 to 9
-    
+
     `cell` is the cell, where this action could be applied
-    
+
     `reason` is a string that will be appended to the `_debug` list to cell if `action` is "remove_possible"
-    
+
     """
+
     action: str
     value: int
     cell: Cell
     reason: str
 
+def multi_group_generator(
+    group_types=["rows", "columns"],
+):
+    @wrapt.decorator
+    def my_decorator(wrapped, instance, args, kwargs):
+        nonlocal group_types
+        self = instance
 
+        random.shuffle(group_types)
+
+        for type in group_types:
+            groups = [self.get_group(type[:-1], idx) for idx in range(9)]
+            yield from wrapped(type=type, groups=groups, **kwargs)
+
+    return my_decorator
 def group_generator(
     group_types=["row", "column", "block"], indices=[0, 1, 2, 3, 4, 5, 6, 7, 8]
 ):
@@ -297,7 +312,7 @@ class Field:
         for single_box_member, members in possibilities.items():
             if len(box := {m.position.block for m in members}) == 1:
                 box_id = box.pop()
-                for member in self.get_group(type="block", id=box_id):
+                for member in self.get_group(type="block", idx=box_id):
                     if member in members:
                         continue
                     if single_box_member not in member.hopeful:
@@ -308,6 +323,58 @@ class Field:
                         cell=member,
                         reason=f"box reduction {single_box_member} only in box {box_id} {list(m.position for m in members)}",
                     )
+
+    @multi_group_generator()
+    def xwing(self, *, type, groups):
+        def decide_x_or_y(type):
+            match type:
+                case "rows":
+                    return "x"
+                case "columns":
+                    return "y"
+                case _:
+                    raise ValueError(f"type was {type} but can only be `row` or `column`")
+        def opposite_group(type):
+            match type:
+                case "rows":
+                    return "column"
+                case "columns":
+                    return "row"
+                case _:
+                    raise ValueError(f"type was {type} but can only be `row` or `column`")
+        possibilities : dict[CellValue, dict[tuple[CellValue, ...], dict[CellValue, list[Cell]]]] = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
+        # print(f"{type} ({idx}) {list(m.value for m in group)}")
+        x_or_y = decide_x_or_y(type)
+        for group_idx, group in enumerate(groups):
+            for member in group:
+                for possible_number in member.hopeful:
+                    sorted_tuple = tuple(sorted(getattr(m.position, x_or_y) for m in group if possible_number in m.hopeful))
+                    # print(f"{possible_number} {sorted_tuple}")
+                    possibilities[possible_number][sorted_tuple][group_idx].append(member)
+
+        for possible_number, lookups in possibilities.items():
+            # print(f"look for {possible_number}")
+            for possibility_tuple, cell_lookup in lookups.items():
+                match type, possibility_tuple, list(cell_lookup.keys()):
+                    case ["rows", [col_a,col_b], [row_a,row_b]] | ["columns", [row_a,row_b], [col_a,col_b]]:
+                    # case [[col_a,col_b], [row_a,row_b]]:
+                        # print(f"{type} solution for {possible_number} found")
+                        x_wing_id = f"{col_a},{row_a} {col_a},{row_b} {col_b},{row_a} {col_b},{row_b}"
+                        # print(x_wing_id)
+                        good_points = sum(cell_lookup.values(), start=[])
+                        for bar_idx in possibility_tuple:
+                            for cell in self.get_group(type=opposite_group(type), idx=bar_idx):
+                                if cell in good_points:
+                                    continue
+                                if possible_number in cell.hopeful:
+                                    yield Action(
+                                        action="remove_possible",
+                                        value=possible_number,
+                                        cell=cell,
+                                        reason=f"X-Wing {x_wing_id}, {possible_number} cannot occur in other cell in this {opposite_group(type)}",
+                                    )
+
+        yield from ()
 
     def apply(self, action):
         if action.action == "remove_possible":
