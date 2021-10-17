@@ -7,6 +7,8 @@ from ..field import Field
 from .events import Event
 from .view import View
 
+debug = {}
+
 
 class Text(View):
     def __init__(self, surface: pg.Surface, text):
@@ -44,6 +46,7 @@ class Cell(View):
         block = self.surface.get_rect()
         text_color = pg.Color("#000000")
         if highlight:
+            debug["cell"] = self.cell
             text_color = pg.Color("#660000")
         self.surface.fill(pg.Color("#ffeefe"), block.inflate(-2, -2))
         if self.cell.value != 0:
@@ -109,7 +112,11 @@ class Block(View):
         )
 
         for cell in self.cells:
-            await cell.draw(highlight=highlight)
+            mouse_pos = pg.mouse.get_pos()
+            mouse_over = cell.surface.get_rect(
+                topleft=cell.surface.get_abs_offset()
+            ).collidepoint(mouse_pos)
+            await cell.draw(highlight=mouse_over)
 
 
 class Board(View):
@@ -125,6 +132,7 @@ class Board(View):
         self.font = pg.font.SysFont("Vera", 42)
         self.blocks = []
         self.cells = []
+        self.debugs = []
         self._idx = 0
         total_size = surface.get_rect()
         board_size = min(total_size.width * 2 // 3, total_size.height)
@@ -166,6 +174,13 @@ class Board(View):
                 blocksurface = self.board_surface.subsurface(blockrect)
                 self.blocks.append(Block(blocksurface, x, y, self.field))
 
+        self.debugs.append(
+            Text(
+                text=f"x: , y: ",
+                surface=surface.subsurface(pg.Rect(0, 0, 200, 50)),
+            )
+        )
+
     async def draw(self):
         self.surface.fill(pg.Color("#a0a0a0"), self._board)
 
@@ -186,6 +201,12 @@ class Board(View):
             await block.draw(highlight=mouse_over)
         for text in self.cells:
             await text.draw(highlight=False)
+        for text in self.debugs:
+            if "cell" in debug:
+                text.text = (
+                    f"x: {debug['cell'].position.x}, y: {debug['cell'].position.y}"
+                )
+                await text.draw(highlight=False)
 
     async def on_mouse_move(self, event):
 
@@ -211,6 +232,7 @@ class Board(View):
                     "hidden_tripples",
                     "pointing_pairs",
                     "box_line_reduction",
+                    "xwing",
                 ]:
                     print(solver)
                     try:

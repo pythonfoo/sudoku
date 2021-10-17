@@ -1,0 +1,81 @@
+{"value": 1, "position": 0, "hopeful": []}
+{"value": 0, "position": 1, "hopeful": [3, 7, 8]}
+{"value": 0, "position": 2, "hopeful": [3, 7]}
+{"value": 0, "position": 3, "hopeful": [2, 3, 4, 7, 8]}
+{"value": 0, "position": 4, "hopeful": [2, 7, 8]}
+{"value": 0, "position": 5, "hopeful": [2, 3, 4, 7, 8]}
+{"value": 5, "position": 6, "hopeful": []}
+{"value": 6, "position": 7, "hopeful": []}
+{"value": 9, "position": 8, "hopeful": []}
+{"value": 4, "position": 9, "hopeful": []}
+{"value": 9, "position": 10, "hopeful": []}
+{"value": 2, "position": 11, "hopeful": []}
+{"value": 0, "position": 12, "hopeful": [3, 7]}
+{"value": 5, "position": 13, "hopeful": []}
+{"value": 6, "position": 14, "hopeful": []}
+{"value": 1, "position": 15, "hopeful": []}
+{"value": 0, "position": 16, "hopeful": [3, 7]}
+{"value": 8, "position": 17, "hopeful": []}
+{"value": 0, "position": 18, "hopeful": [3, 7, 8]}
+{"value": 5, "position": 19, "hopeful": []}
+{"value": 6, "position": 20, "hopeful": []}
+{"value": 1, "position": 21, "hopeful": []}
+{"value": 0, "position": 22, "hopeful": [7, 8]}
+{"value": 9, "position": 23, "hopeful": []}
+{"value": 2, "position": 24, "hopeful": []}
+{"value": 4, "position": 25, "hopeful": []}
+{"value": 0, "position": 26, "hopeful": [3, 7]}
+{"value": 0, "position": 27, "hopeful": [3, 5, 7]}
+{"value": 0, "position": 28, "hopeful": [3, 7]}
+{"value": 9, "position": 29, "hopeful": []}
+{"value": 6, "position": 30, "hopeful": []}
+{"value": 4, "position": 31, "hopeful": []}
+{"value": 0, "position": 32, "hopeful": [2, 7]}
+{"value": 8, "position": 33, "hopeful": []}
+{"value": 0, "position": 34, "hopeful": [2, 5]}
+{"value": 1, "position": 35, "hopeful": []}
+{"value": 0, "position": 36, "hopeful": [5, 7]}
+{"value": 6, "position": 37, "hopeful": []}
+{"value": 4, "position": 38, "hopeful": []}
+{"value": 0, "position": 39, "hopeful": [2, 7, 8, 9]}
+{"value": 1, "position": 40, "hopeful": []}
+{"value": 0, "position": 41, "hopeful": [2, 7, 8]}
+{"value": 0, "position": 42, "hopeful": [3, 7, 9]}
+{"value": 0, "position": 43, "hopeful": [2, 5]}
+{"value": 0, "position": 44, "hopeful": [3, 7]}
+{"value": 2, "position": 45, "hopeful": []}
+{"value": 1, "position": 46, "hopeful": []}
+{"value": 8, "position": 47, "hopeful": []}
+{"value": 0, "position": 48, "hopeful": [7, 9]}
+{"value": 3, "position": 49, "hopeful": []}
+{"value": 5, "position": 50, "hopeful": []}
+{"value": 6, "position": 51, "hopeful": []}
+{"value": 0, "position": 52, "hopeful": [7, 9]}
+{"value": 4, "position": 53, "hopeful": []}
+{"value": 0, "position": 54, "hopeful": [3, 7, 8]}
+{"value": 4, "position": 55, "hopeful": []}
+{"value": 0, "position": 56, "hopeful": [3, 7]}
+{"value": 5, "position": 57, "hopeful": []}
+{"value": 0, "position": 58, "hopeful": [2, 7, 8, 9]}
+{"value": 0, "position": 59, "hopeful": [2, 3, 7, 8]}
+{"value": 0, "position": 60, "hopeful": [3, 7, 9]}
+{"value": 1, "position": 61, "hopeful": []}
+{"value": 6, "position": 62, "hopeful": []}
+{"value": 9, "position": 63, "hopeful": []}
+{"value": 0, "position": 64, "hopeful": [3, 7, 8]}
+{"value": 5, "position": 65, "hopeful": []}
+{"value": 0, "position": 66, "hopeful": [3, 7, 8]}
+{"value": 6, "position": 67, "hopeful": []}
+{"value": 1, "position": 68, "hopeful": []}
+{"value": 4, "position": 69, "hopeful": []}
+{"value": 0, "position": 70, "hopeful": [3, 7, 8]}
+{"value": 2, "position": 71, "hopeful": []}
+{"value": 6, "position": 72, "hopeful": []}
+{"value": 2, "position": 73, "hopeful": []}
+{"value": 1, "position": 74, "hopeful": []}
+{"value": 0, "position": 75, "hopeful": [3, 4, 7, 8]}
+{"value": 0, "position": 76, "hopeful": [7, 8, 9]}
+{"value": 0, "position": 77, "hopeful": [3, 4, 7, 8]}
+{"value": 0, "position": 78, "hopeful": [3, 7, 9]}
+{"value": 0, "position": 79, "hopeful": [3, 7, 8, 9]}
+{"value": 5, "position": 80, "hopeful": []}
