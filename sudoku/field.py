@@ -45,6 +45,8 @@ def multi_group_generator(
             yield from wrapped(type=type, groups=groups, **kwargs)
 
     return my_decorator
+
+
 def group_generator(
     group_types=["row", "column", "block"], indices=[0, 1, 2, 3, 4, 5, 6, 7, 8]
 ):
@@ -374,6 +376,9 @@ class Field:
                                         reason=f"X-Wing {x_wing_id}, {possible_number} cannot occur in other cell in this {opposite_group(type)}",
                                     )
 
+        yield from ()
+
+    def single_chains(self, idx):
         yield from ()
 
     def apply(self, action):
