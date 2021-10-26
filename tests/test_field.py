@@ -226,5 +226,23 @@ def test_xwing():
     assert actions[0].value == 7
 
 
+def test_single_chains():
+    f = Field("0" * 81)
+    f.load(Path("tests/savegames/single_chains.savegame"))
+    actions = list(sorted(f.single_chains()))
+    for action in actions:
+        print(
+            f"{action.action} {action.value} from {action.cell.position} {action.reason}"
+        )
+    assert len(actions) == 3
+
+    positions = set(a.cell.position.as_int() for a in actions)
+    assert len(positions) == 3
+    values = set(a.value for a in actions)
+
+    assert len(values) == 1
+    assert actions[0].value == 7
+
+
 if __name__ == "__main__":
     pytest.main(["-k", "field"])

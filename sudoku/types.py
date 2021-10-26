@@ -22,7 +22,7 @@ class CellPosition(NamedTuple):
            - `4` is the center block,
            - `8` is the bottom right block.
         """
-        return ((self.x) // 3) + (((self.y) // 3)) * 3
+        return ((self.x) // 3) + ((self.y) // 3) * 3
 
     @property
     def row(self) -> CellValue:

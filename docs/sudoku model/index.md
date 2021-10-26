@@ -4,6 +4,7 @@
 cell_source
 field_source
 types
+solver
 ```
 
 # The Sudoku Model
