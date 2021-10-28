@@ -68,6 +68,13 @@ class Cell:
         self._value = value
         self.hopeful = set()
 
+    def sees(self, other: Cell) -> bool:
+        return (
+            self.position.block == other.position.block
+            or self.position.row == other.position.row
+            or self.position.column == other.position.column
+        )
+
     def __str__(self):
         return f"{self._value}"
 

@@ -234,6 +234,7 @@ class Board(View):
                     "pointing_pairs",
                     "box_line_reduction",
                     "xwing",
+                    "single_chains",
                 ]:
                     print(solver)
                     try:
