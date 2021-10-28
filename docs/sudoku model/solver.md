@@ -1,4 +1,6 @@
-# Solvers
+# Implemented Solvers
+
+Here we describe short the rules that where followed to implemented the solvers.
 
 ## Solved
 
