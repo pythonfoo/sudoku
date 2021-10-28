@@ -30,7 +30,25 @@ Is also similar to the naked single, but you need to find two numbers, that are 
 cells. In this case you know that these cells can only be set to either of the number and you can remove all other
 possibilities for those two cells.
 
-### Hidden triples
+## Hidden triples
 
 This the same to hidden pairs, as naked triples was to naked pairs. 
+
+## Pointing pairs
+
+If in one block all possible positions for a specific number are only in one row or column, all other cells in other blocks 
+of this row or column can be this number.
+
+## Box Line Reduction
+
+If in one row, a specific number is only possible in one group, this group can only place this number in this specific row
+or column.
+
+## X-Wing
+
+Todo
+
+## Simple Chain
+
+Todo
 
