@@ -51,23 +51,41 @@ class SubChain(Generic[T]):
             self.colors[new_color].add(other_member)
             self.member_to_color[other_member] = new_color
 
+    def __str__(self):
+        member_positions = sorted([(m.position.x, m.position.y) for m in self.members])
+        return f"SubChain{member_positions}"
+
+    def __repr__(self) -> str:
+        return str(self)
+
 
 class Chain(Generic[T]):
     def __init__(
         self,
     ):
         self.members: set[T] = set()
-        self.member_to_subchain = dict()
+        self.member_to_subchain: dict[T, SubChain[T]] = dict()
+        self.subchains: set[SubChain[T]] = set()
 
     def add_pair(self, a: T, b: T):
         sub_chain: SubChain[T] = SubChain(a, b)
+        merged_members = set()
         if a in self.members:
-            sub_chain.merge(self.member_to_subchain[a])
+            other = self.member_to_subchain[a]
+            sub_chain.merge(other)
+            merged_members |= other.members
+            self.subchains.remove(other)
         if b in self.members:
-            sub_chain.merge(self.member_to_subchain[b])
+            other = self.member_to_subchain[b]
+            sub_chain.merge(other)
+            merged_members |= other.members
+            if other in self.subchains:
+                # This can happen when we close a loop in the chain
+                self.subchains.remove(other)
         self.members |= sub_chain.members
         for member in sub_chain.members:
             self.member_to_subchain[member] = sub_chain
+        self.subchains.add(sub_chain)
 
     def _is_same_subchain(self, a: T, b: T):
         if not a in self.members or b not in self.members:

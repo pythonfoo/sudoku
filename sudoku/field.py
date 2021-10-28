@@ -9,7 +9,7 @@ import wrapt
 
 from .cell import Cell
 from .types import CellPosition, CellValue
-
+from .chain import Chain
 
 class Action(NamedTuple):
     """
@@ -29,6 +29,14 @@ class Action(NamedTuple):
     value: int
     cell: Cell
     reason: str
+
+def check_generator(checks=range(9)):
+    @wrapt.decorator
+    def my_decorator(wrapped, instance, args, kwargs):
+        self = instance
+        for check in checks:
+            yield from wrapped(check=check)
+    return my_decorator
 
 def multi_group_generator(
     group_types=["rows", "columns"],
@@ -93,6 +101,7 @@ class Field:
 
     __slots__ = ["cells"]
 
+    _groups = ( "row", "column", "block", )
     def __init__(self, cell_string: str):
         self.cells = [
             Cell(value=int(value), position=CellPosition.from_int(position))
@@ -378,7 +387,32 @@ class Field:
 
         yield from ()
 
-    def single_chains(self, idx):
+    @check_generator()
+    def single_chains(self, check):
+        # https://www.sudokuwiki.org/Singles_Chains
+        chains = Chain()
+        for group in self._groups:
+            for idx in range(9):
+                possible_cells = [cell for cell in self.get_group(type=group, idx=idx) if check in cell.hopeful]
+                if len(possible_cells) != 2:
+                    continue
+                chains.add_pair(*possible_cells)
+
+        possible_cells = {cell for cell in self.cells if check in cell.hopeful}
+        print(chains.subchains)
+        for chain in chains.subchains:
+            for cell in (possible_cells - chain.members):
+                colors_seen = {chain.member_to_color[m] for m in chain.members if cell.sees(m)}
+                if len(colors_seen) == 2:
+                    yield Action(
+                        action="remove_possible",
+                        value=check,
+                        cell=cell,
+                        reason=f"single chain rule 4: {cell} sees multiple colors of chain {chain}",
+                    )
+                    # TODO: should we check if it is part of a chain and use this knowledge to solve other cells already?
+
+
         yield from ()
 
     def apply(self, action):
