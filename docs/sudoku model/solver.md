@@ -48,7 +48,8 @@ or column.
 
 ## X-Wing
 
-Todo
+When you have 2 rows where a number is only possible at the same 2 columns, you know that the this numer cannot be present 
+in any other row at this colum. This also works when you change column with row.
 
 ## Simple Chain
 
