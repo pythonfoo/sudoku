@@ -48,9 +48,13 @@ or column.
 
 ## X-Wing
 
-Todo
+When you have 2 rows where a number is only possible at the same 2 columns, you know that the this numer cannot be present 
+in any other row at this colum. This also works when you change column with row.
 
 ## Simple Chain
 
-Todo
+To build a chain graph, add all 2 cell connections where only 2 cells have a specific number possible. After you added
+all possible cells, start colouring them with 2 colors that neighbours don't have the same color. Now you can look at all other
+cells where this number is possible that are not part of the chain and if they can see two or more cells from the chain
+that have different colours, you know that this number is not possible on this cell.
 
