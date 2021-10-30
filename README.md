@@ -14,7 +14,8 @@ A [sudoku] is logic puzzle, where each number is only allowed once per row, colu
   * hidden_tripples
   * pointing_pairs
   * box_line_reduction
-  * x_wing
+  * xwing
+  * simple_chain (rule 4)
 * GUI
   * showing the board
   * showing possible numbers
@@ -24,6 +25,7 @@ A [sudoku] is logic puzzle, where each number is only allowed once per row, colu
 
 ## Planned features
 * Solver
+  * simple_chain (rule 2)
   * y_wing
   * sword_fish
   * xyz_wing (?)
