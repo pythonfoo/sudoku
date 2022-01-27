@@ -1,15 +1,18 @@
+from __future__ import annotations
+
 import json
 import random
 from collections import defaultdict
 from itertools import combinations
 from pathlib import Path
-from typing import NamedTuple
+from typing import Callable, Generator, NamedTuple, cast
 
 import wrapt
 
 from .cell import Cell
-from .types import CellPosition, CellValue
 from .chain import Chain
+from .types import CellPosition, CellValue
+
 
 class Action(NamedTuple):
     """
@@ -36,7 +39,7 @@ def check_generator(checks=range(9)):
         self = instance
         for check in checks:
             yield from wrapped(check=check)
-    return my_decorator
+    return cast(Callable[..., Generator], my_decorator)
 
 def multi_group_generator(
     group_types=["rows", "columns"],
@@ -52,14 +55,13 @@ def multi_group_generator(
             groups = [self.get_group(type[:-1], idx) for idx in range(9)]
             yield from wrapped(type=type, groups=groups, **kwargs)
 
-    return my_decorator
-
+    return cast(Callable[..., Generator], my_decorator)
 
 def group_generator(
     group_types=["row", "column", "block"], indices=[0, 1, 2, 3, 4, 5, 6, 7, 8]
 ):
     @wrapt.decorator
-    def my_decorator(wrapped, instance, args, kwargs):
+    def my_decorator(wrapped: Callable[...,Generator], instance: Field, args: list, kwargs: dict) -> Generator:
         nonlocal group_types
         nonlocal indices
         self = instance
@@ -89,7 +91,7 @@ def group_generator(
                 group = self.get_group(type, idx)
                 yield from wrapped(type=type, idx=idx, group=group, **kwargs)
 
-    return my_decorator
+    return cast(Callable[..., Generator], my_decorator)
 
 
 class Field:

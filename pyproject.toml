@@ -17,6 +17,7 @@ myst-parser = {git = "https://github.com/executablebooks/MyST-Parser.git"}
 commonmark = "^0.9.1"
 sphinx-autobuild = "^2021.3.14"
 pytest-watch = "^4.2.0"
+pyright = "^0.0.13"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
