@@ -1,1 +1,2 @@
-from . import cell, field, game, types
+from . import cell, field, types
+from .pg_gui import game
