@@ -10,6 +10,7 @@ pydantic = "*"
 pygame = "*"
 wrapt = "*"
 textual = "^0.1.14"
+pyfiglet = "^0.8.post1"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"
