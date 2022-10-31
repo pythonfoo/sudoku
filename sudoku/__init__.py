@@ -1,1 +1,1 @@
-from . import cell, field, game, types
+from . import cell, field, types

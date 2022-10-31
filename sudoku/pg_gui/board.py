@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 from pathlib import Path
 
@@ -5,13 +7,14 @@ import pygame as pg
 
 from ..field import Field
 from .events import Event
+from .types import Surface
 from .view import View
 
 debug = {}
 
 
 class Text(View):
-    def __init__(self, surface: pg.Surface, text):
+    def __init__(self, surface: Surface, text):
         super().__init__(surface)
         self.text = text
         cell_size = min(self.surface.get_rect().width, self.surface.get_rect().height)
@@ -32,7 +35,7 @@ class Text(View):
 
 
 class Cell(View):
-    def __init__(self, surface: pg.Surface, x, y, cell):
+    def __init__(self, surface: Surface, x, y, cell):
         super().__init__(surface)
         self.cell = cell
         self.x = x
@@ -71,7 +74,7 @@ class Cell(View):
 
 
 class Block(View):
-    def __init__(self, surface: pg.Surface, x, y, field):
+    def __init__(self, surface: Surface, x, y, field):
         super().__init__(surface)
         self.field = field
         self.x = x
@@ -120,7 +123,7 @@ class Block(View):
 
 
 class Board(View):
-    def __init__(self, surface: pg.Surface):
+    def __init__(self, surface: pg.surface.Surface):
         super().__init__(surface)
         self.field = Field(
             # "800000503501007000700308210680073000009005000300004805970500680063789000150040007"

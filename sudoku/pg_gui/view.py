@@ -1,9 +1,11 @@
 import pygame
+
 from .events import Event
+from .types import Surface
 
 
 class View:
-    def __init__(self, surface: pygame.Surface):
+    def __init__(self, surface: Surface):
         self.active = False
         self.surface = surface
 

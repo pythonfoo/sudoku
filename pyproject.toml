@@ -6,17 +6,20 @@ authors = ["Olaf Gladis <github@gladis.org>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-pydantic = "^1.6.1"
-pygame = "^2.0.2.dev3"
-wrapt = "^1.12.1"
+pydantic = "*"
+pygame = "*"
+wrapt = "*"
+textual = "^0.1.14"
+pyfiglet = "^0.8.post1"
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.1.0"
+pytest = "*"
 furo = "*"
-myst-parser = {git = "https://github.com/executablebooks/MyST-Parser.git"}
-commonmark = "^0.9.1"
-sphinx-autobuild = "^2021.3.14"
-pytest-watch = "^4.2.0"
+myst-parser = "*"
+commonmark = "*"
+sphinx-autobuild = "*"
+pytest-watch = "*"
+pyright = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

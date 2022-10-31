@@ -1,8 +1,10 @@
-import pygame as pg
 import asyncio
 import time
-from .gui import Board, View
-from .gui.events import Event
+
+import pygame as pg
+
+from . import Board, View
+from .events import Event
 
 
 class Game:
