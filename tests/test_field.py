@@ -1,9 +1,7 @@
-from dataclasses import dataclass
 from pathlib import Path
 from typing import List, NamedTuple
 
 import pytest
-import sudoku
 from sudoku.field import Field
 
 
@@ -18,6 +16,7 @@ class DCell(NamedTuple):
 
 def test_field():
     f = Field("asdf123reaf213")
+    def f
 
 
 def test_single():
