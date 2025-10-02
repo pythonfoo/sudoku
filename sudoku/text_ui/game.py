@@ -1,8 +1,6 @@
-
 """
 A Textual app to create a fully working calculator, modelled after MacOS Calculator.
 """
-
 
 from textual.app import App
 from textual.views import GridView

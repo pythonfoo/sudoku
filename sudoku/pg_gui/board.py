@@ -212,9 +212,7 @@ class Board(View):
                 )
                 await text.draw(highlight=False)
 
-    async def on_mouse_move(self, event):
-
-        ...
+    async def on_mouse_move(self, event): ...
 
     async def on_key_down(self, event):
         if event.key == pg.K_a:
@@ -274,5 +272,4 @@ class Board(View):
             return Event.QUIT
 
 
-class GameView(View):
-    ...
+class GameView(View): ...

@@ -24,9 +24,9 @@ class Cell:
             {1, 2, 3, 4, 5, 6, 7, 8, 9} if value == 0 else set()
         )  # numbers that are still possible
         self.futile: set[CellValue] = set()  # numbers that are not possible anymore
-        self._debug: list[
-            tuple[CellValue, str]
-        ] = list()  # list of reason why a number is not possible anymore
+        self._debug: list[tuple[CellValue, str]] = (
+            list()
+        )  # list of reason why a number is not possible anymore
         self._value = value
 
     @property
