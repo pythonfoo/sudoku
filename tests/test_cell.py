@@ -1,7 +1,7 @@
 import pytest
+
 from sudoku.cell import Cell
 
 
 def test_cell():
-    c = Cell()
-
+    c = Cell(0, (0, 0))

@@ -1,6 +1,6 @@
 from __future__ import annotations
 from collections import defaultdict
-from typing import TypeVar, Generic, TypedDict, Literal
+from typing import TypeVar, Generic, Literal
 
 T = TypeVar("T")
 
@@ -15,7 +15,7 @@ class SubChain(Generic[T]):
         self.member_to_color: dict[T, Literal["a", "b"]] = {a: "a", b: "b"}
 
     def is_same_color(self, a: T, b: T):
-        if not a in self.members or b not in self.members:
+        if a not in self.members or b not in self.members:
             raise ValueError("Both members have to belong to the same SubChain")
         return self.member_to_color[a] == self.member_to_color[b]
 
@@ -88,7 +88,7 @@ class Chain(Generic[T]):
         self.subchains.add(sub_chain)
 
     def _is_same_subchain(self, a: T, b: T):
-        if not a in self.members or b not in self.members:
+        if a not in self.members or b not in self.members:
             return False
         if self.member_to_subchain[a] is not self.member_to_subchain[b]:
             return False

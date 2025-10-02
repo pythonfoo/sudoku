@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import List, Set, Tuple
 
 from .types import CellPosition, CellValue
 

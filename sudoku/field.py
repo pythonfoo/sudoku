@@ -33,13 +33,17 @@ class Action(NamedTuple):
     cell: Cell
     reason: str
 
+
 def check_generator(checks=range(9)):
     @wrapt.decorator
     def my_decorator(wrapped, instance, args, kwargs):
         self = instance
+        self = self
         for check in checks:
             yield from wrapped(check=check)
+
     return cast(Callable[..., Generator], my_decorator)
+
 
 def multi_group_generator(
     group_types=["rows", "columns"],
@@ -57,11 +61,14 @@ def multi_group_generator(
 
     return cast(Callable[..., Generator], my_decorator)
 
+
 def group_generator(
     group_types=["row", "column", "block"], indices=[0, 1, 2, 3, 4, 5, 6, 7, 8]
 ):
     @wrapt.decorator
-    def my_decorator(wrapped: Callable[...,Generator], instance: Field, args: list, kwargs: dict) -> Generator:
+    def my_decorator(
+        wrapped: Callable[..., Generator], instance: Field, args: list, kwargs: dict
+    ) -> Generator:
         nonlocal group_types
         nonlocal indices
         self = instance
@@ -103,7 +110,12 @@ class Field:
 
     __slots__ = ["cells"]
 
-    _groups = ( "row", "column", "block", )
+    _groups = (
+        "row",
+        "column",
+        "block",
+    )
+
     def __init__(self, cell_string: str):
         self.cells = [
             Cell(value=int(value), position=CellPosition.from_int(position))
@@ -346,7 +358,10 @@ class Field:
                 case "columns":
                     return "y"
                 case _:
-                    raise ValueError(f"type was {type} but can only be `row` or `column`")
+                    raise ValueError(
+                        f"type was {type} but can only be `row` or `column`"
+                    )
+
         def opposite_group(type):
             match type:
                 case "rows":
@@ -354,29 +369,47 @@ class Field:
                 case "columns":
                     return "row"
                 case _:
-                    raise ValueError(f"type was {type} but can only be `row` or `column`")
-        possibilities : dict[CellValue, dict[tuple[CellValue, ...], dict[CellValue, list[Cell]]]] = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
+                    raise ValueError(
+                        f"type was {type} but can only be `row` or `column`"
+                    )
+
+        possibilities: dict[
+            CellValue, dict[tuple[CellValue, ...], dict[CellValue, list[Cell]]]
+        ] = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
         # print(f"{type} ({idx}) {list(m.value for m in group)}")
         x_or_y = decide_x_or_y(type)
         for group_idx, group in enumerate(groups):
             for member in group:
                 for possible_number in member.hopeful:
-                    sorted_tuple = tuple(sorted(getattr(m.position, x_or_y) for m in group if possible_number in m.hopeful))
+                    sorted_tuple = tuple(
+                        sorted(
+                            getattr(m.position, x_or_y)
+                            for m in group
+                            if possible_number in m.hopeful
+                        )
+                    )
                     # print(f"{possible_number} {sorted_tuple}")
-                    possibilities[possible_number][sorted_tuple][group_idx].append(member)
+                    possibilities[possible_number][sorted_tuple][group_idx].append(
+                        member
+                    )
 
         for possible_number, lookups in possibilities.items():
             # print(f"look for {possible_number}")
             for possibility_tuple, cell_lookup in lookups.items():
                 match type, possibility_tuple, list(cell_lookup.keys()):
-                    case ["rows", [col_a,col_b], [row_a,row_b]] | ["columns", [row_a,row_b], [col_a,col_b]]:
-                    # case [[col_a,col_b], [row_a,row_b]]:
+                    case (
+                        ["rows", [col_a, col_b], [row_a, row_b]]
+                        | ["columns", [row_a, row_b], [col_a, col_b]]
+                    ):
+                        # case [[col_a,col_b], [row_a,row_b]]:
                         # print(f"{type} solution for {possible_number} found")
                         x_wing_id = f"{col_a},{row_a} {col_a},{row_b} {col_b},{row_a} {col_b},{row_b}"
                         # print(x_wing_id)
                         good_points = sum(cell_lookup.values(), start=[])
                         for bar_idx in possibility_tuple:
-                            for cell in self.get_group(type=opposite_group(type), idx=bar_idx):
+                            for cell in self.get_group(
+                                type=opposite_group(type), idx=bar_idx
+                            ):
                                 if cell in good_points:
                                     continue
                                 if possible_number in cell.hopeful:
@@ -395,7 +428,11 @@ class Field:
         chains = Chain()
         for group in self._groups:
             for idx in range(9):
-                possible_cells = [cell for cell in self.get_group(type=group, idx=idx) if check in cell.hopeful]
+                possible_cells = [
+                    cell
+                    for cell in self.get_group(type=group, idx=idx)
+                    if check in cell.hopeful
+                ]
                 if len(possible_cells) != 2:
                     continue
                 chains.add_pair(*possible_cells)
@@ -403,8 +440,10 @@ class Field:
         possible_cells = {cell for cell in self.cells if check in cell.hopeful}
         print(chains.subchains)
         for chain in chains.subchains:
-            for cell in (possible_cells - chain.members):
-                colors_seen = {chain.member_to_color[m] for m in chain.members if cell.sees(m)}
+            for cell in possible_cells - chain.members:
+                colors_seen = {
+                    chain.member_to_color[m] for m in chain.members if cell.sees(m)
+                }
                 if len(colors_seen) == 2:
                     yield Action(
                         action="remove_possible",
@@ -413,7 +452,6 @@ class Field:
                         reason=f"single chain rule 4: {cell} sees multiple colors of chain {chain}",
                     )
                     # TODO: should we check if it is part of a chain and use this knowledge to solve other cells already?
-
 
         yield from ()
 

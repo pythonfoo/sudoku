@@ -180,7 +180,7 @@ class Board(View):
 
         self.debugs.append(
             Text(
-                text=f"x: , y: ",
+                text="x: , y: ",
                 surface=surface.subsurface(pg.Rect(0, 0, 200, 50)),
             )
         )

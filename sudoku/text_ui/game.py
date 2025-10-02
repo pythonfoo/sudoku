@@ -1,20 +1,12 @@
-import asyncio
 
 """
 A Textual app to create a fully working calculator, modelled after MacOS Calculator.
 """
 
-from decimal import Decimal
 
-from rich.align import Align
-from rich.console import Console, ConsoleOptions, RenderableType, RenderResult
-from rich.padding import Padding
-from rich.text import Text
 from textual.app import App
-from textual.reactive import Reactive
 from textual.views import GridView
-from textual.widget import Widget
-from textual.widgets import Button, ButtonPressed
+from textual.widgets import Button
 
 
 class Cell(Button):
