@@ -91,7 +91,7 @@ def test_naked_pairs() -> None:
         DCell(hopeful={1, 2, 3, 4, 5}, position=1),
         DCell(hopeful={2, 3, 4, 5}, position=2),
         DCell(hopeful={2, 4}, position=3),
-        DCell(hopeful={}, value=3, position=4),
+        DCell(hopeful=set(), value=3, position=4),
         DCell(hopeful={2, 4}, position=5),
         DCell(hopeful={2, 5}, position=6),
         DCell(hopeful={4, 5}, position=7),
@@ -169,9 +169,9 @@ def test_hidden_pairs() -> None:
     print(actions)
     assert len(actions) == 9
 
-    positions = set(a.cell.position.as_int() for a in actions)
+    positions = {a.cell.position.as_int() for a in actions}
     assert len(positions) == 2
-    values = set(a.value for a in actions)
+    values = {a.value for a in actions}
 
     assert (
         values.intersection({6, 7}) == set()
@@ -186,9 +186,9 @@ def test_hidden_tripples() -> None:
         print(f"{action.value} {action.reason}")
     assert len(actions) == 9
 
-    positions = set(a.cell.position.as_int() for a in actions)
+    positions = {a.cell.position.as_int() for a in actions}
     assert len(positions) == 3
-    values = set(a.value for a in actions)
+    values = {a.value for a in actions}
 
     assert (
         values.intersection({2, 5, 6}) == set()
@@ -205,9 +205,9 @@ def test_box_line_reduction() -> None:
         )
     assert len(actions) == 3
 
-    positions = set(a.cell.position.as_int() for a in actions)
+    positions = {a.cell.position.as_int() for a in actions}
     assert len(positions) == 3
-    values = set(a.value for a in actions)
+    values = {a.value for a in actions}
 
     assert len(values) == 1
     assert actions[0].value == 4
@@ -223,9 +223,9 @@ def test_xwing() -> None:
         )
     assert len(actions) == 6
 
-    positions = set(a.cell.position.as_int() for a in actions)
+    positions = {a.cell.position.as_int() for a in actions}
     assert len(positions) == 6
-    values = set(a.value for a in actions)
+    values = {a.value for a in actions}
 
     assert len(values) == 1
     assert actions[0].value == 7
@@ -241,9 +241,9 @@ def test_single_chains() -> None:
         )
     assert len(actions) == 3
 
-    positions = set(a.cell.position.as_int() for a in actions)
+    positions = {a.cell.position.as_int() for a in actions}
     assert len(positions) == 3
-    values = set(a.value for a in actions)
+    values = {a.value for a in actions}
 
     assert len(values) == 1
     assert actions[0].value == 7
