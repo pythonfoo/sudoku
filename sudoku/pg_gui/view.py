@@ -1,5 +1,3 @@
-from typing import Optional
-
 import pygame
 
 from .events import Event

@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import asyncio
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import pygame as pg
 
 from ..cell import Cell as SudokuCell
 from ..field import Field
+from ..solver import all_solvers, show_possibles
 from .events import Event
 from .types import Surface
 from .view import View
@@ -226,30 +227,18 @@ class Board(View):
                 print("go")
                 try_again = False
 
-                for solver in [
-                    "solved",
-                    "show_possibles",
-                    "singles",
-                    "naked_pairs",
-                    "naked_triples",
-                    "hidden_pairs",
-                    "hidden_tripples",
-                    "pointing_pairs",
-                    "box_line_reduction",
-                    "xwing",
-                    "single_chains",
-                ]:
-                    print(solver)
+                for solver in all_solvers:
+                    print(solver.__name__)
                     try:
-                        changes = list(getattr(self.field, solver)())
+                        changes = list(solver(self.field)())
                         print(len(changes))
-                        for change in getattr(self.field, solver)():
+                        for change in changes:
                             try_again = True
-                            await asyncio.sleep(0.0)
+                            await asyncio.sleep(0.0)  # allow UI to update
                             print(f"{change.reason}")
                             self.field.apply(change)
                             if solver in ("solved", "singles"):
-                                for change in self.field.show_possibles():
+                                for change in show_possibles(self.field):
                                     self.field.apply(change)
                         if try_again:
                             break

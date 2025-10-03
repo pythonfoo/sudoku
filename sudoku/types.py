@@ -1,4 +1,6 @@
-from typing import NamedTuple, TypeAlias
+from __future__ import annotations
+
+from typing import Literal, NamedTuple, TypeAlias
 
 CellValue: TypeAlias = (
     int  # Could be Literal[0, 1, 2, 3, 4, 5, 6, 7, 8, 9] for stricter typing
