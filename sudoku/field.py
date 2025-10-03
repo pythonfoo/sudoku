@@ -5,7 +5,8 @@ import random
 from collections import defaultdict
 from itertools import combinations
 from pathlib import Path
-from typing import Any, Callable, Generator, NamedTuple, cast
+from typing import Any, NamedTuple, cast
+from collections.abc import Callable, Generator
 
 import wrapt
 
@@ -37,11 +38,11 @@ class Action(NamedTuple):
 def check_generator(checks: range = range(9)) -> Callable[..., Any]:
     @wrapt.decorator
     def my_decorator(
-        wrapped: Callable[..., Generator[Any, None, None]],
+        wrapped: Callable[..., Generator[Any]],
         instance: Any,
         args: list[Any],
         kwargs: dict[str, Any],
-    ) -> Generator[Any, None, None]:
+    ) -> Generator[Any]:
         self = instance
         self = self
         for check in checks:
@@ -58,11 +59,11 @@ def multi_group_generator(
 
     @wrapt.decorator
     def my_decorator(
-        wrapped: Callable[..., Generator[Any, None, None]],
+        wrapped: Callable[..., Generator[Any]],
         instance: Any,
         args: list[Any],
         kwargs: dict[str, Any],
-    ) -> Generator[Any, None, None]:
+    ) -> Generator[Any]:
         local_group_types = group_types
         self = instance
 
@@ -85,11 +86,11 @@ def group_generator(
 
     @wrapt.decorator
     def my_decorator(
-        wrapped: Callable[..., Generator[Any, None, None]],
-        instance: "Field",
+        wrapped: Callable[..., Generator[Any]],
+        instance: Field,
         args: list[Any],
         kwargs: dict[str, Any],
-    ) -> Generator[Any, None, None]:
+    ) -> Generator[Any]:
         local_group_types = group_types
         local_indices = indices
         self = instance
@@ -175,7 +176,7 @@ class Field:
     @group_generator()
     def show_possibles(
         self, *, type: str, idx: int, group: set[Cell]
-    ) -> Generator[Action, None, None]:
+    ) -> Generator[Action]:
         for member in group:
             if member.value == 0:
                 continue
@@ -193,7 +194,7 @@ class Field:
     @group_generator()
     def naked_pairs(
         self, *, type: str, idx: int, group: set[Cell]
-    ) -> Generator[Action, None, None]:
+    ) -> Generator[Action]:
         pairs: defaultdict[tuple[int, ...], list[Cell]] = defaultdict(list)
         for member in group:
             if len(member.hopeful) == 2:
@@ -216,7 +217,7 @@ class Field:
     @group_generator()
     def naked_triples(
         self, *, type: str, idx: int, group: set[Cell]
-    ) -> Generator[Action, None, None]:
+    ) -> Generator[Action]:
         triples: defaultdict[tuple[int, ...], list[Cell]] = defaultdict(list)
         for member in group:
             if len(member.hopeful) == 3:
@@ -245,7 +246,7 @@ class Field:
     @group_generator()
     def hidden_pairs(
         self, *, type: str, idx: int, group: set[Cell]
-    ) -> Generator[Action, None, None]:
+    ) -> Generator[Action]:
         pairs: defaultdict[int, set[Cell]] = defaultdict(set)
         for member in group:
             for possible in member.hopeful:
@@ -278,7 +279,7 @@ class Field:
     @group_generator()
     def hidden_tripples(
         self, *, type: str, idx: int, group: set[Cell]
-    ) -> Generator[Action, None, None]:
+    ) -> Generator[Action]:
         tripples: defaultdict[int, set[Cell]] = defaultdict(set)
         for member in group:
             for possible in member.hopeful:
@@ -308,7 +309,7 @@ class Field:
     @group_generator()
     def solved(
         self, *, type: str, idx: int, group: set[Cell]
-    ) -> Generator[Action, None, None]:
+    ) -> Generator[Action]:
         for member in group:
             if len(member.hopeful) == 1:
                 value = list(member.hopeful)[0]
@@ -322,7 +323,7 @@ class Field:
     @group_generator()
     def singles(
         self, *, type: str, idx: int, group: set[Cell]
-    ) -> Generator[Action, None, None]:
+    ) -> Generator[Action]:
         possibilities: defaultdict[int, list[Cell]] = defaultdict(list)
         for member in group:
             for possible_number in member.hopeful:
@@ -340,7 +341,7 @@ class Field:
     @group_generator(group_types=["block"])
     def pointing_pairs(
         self, *, type: str, idx: int, group: set[Cell]
-    ) -> Generator[Action, None, None]:
+    ) -> Generator[Action]:
         possibilities: defaultdict[int, list[Cell]] = defaultdict(list)
         for member in group:
             for possible_number in member.hopeful:
@@ -367,7 +368,7 @@ class Field:
     @group_generator(group_types=["row", "column"])
     def box_line_reduction(
         self, *, type: str, idx: int, group: set[Cell]
-    ) -> Generator[Action, None, None]:
+    ) -> Generator[Action]:
         possibilities: defaultdict[int, list[Cell]] = defaultdict(list)
         for member in group:
             for possible_number in member.hopeful:
@@ -391,7 +392,7 @@ class Field:
     @multi_group_generator()
     def xwing(
         self, *, type: str, groups: list[set[Cell]]
-    ) -> Generator[Action, None, None]:
+    ) -> Generator[Action]:
         def decide_x_or_y(type: str) -> str:
             match type:
                 case "rows":
@@ -464,7 +465,7 @@ class Field:
         yield from ()
 
     @check_generator()
-    def single_chains(self, check: int) -> Generator[Action, None, None]:
+    def single_chains(self, check: int) -> Generator[Action]:
         # https://www.sudokuwiki.org/Singles_Chains
         chains: Chain[Cell] = Chain()
         for group in self._groups:

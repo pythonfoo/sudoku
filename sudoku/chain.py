@@ -8,7 +8,7 @@ T = TypeVar("T")
 
 class SubChain(Generic[T]):
     def __init__(self, a: T, b: T):
-        self.members: set[T] = set((a, b))
+        self.members: set[T] = {a, b}
         self.connections: dict[T, set[T]] = defaultdict(set)
         self.connections[a].add(b)
         self.connections[b].add(a)

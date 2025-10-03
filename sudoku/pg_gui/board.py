@@ -216,7 +216,7 @@ class Board(View):
 
     async def on_mouse_move(self, event: pg.event.Event) -> None: ...
 
-    async def on_key_down(self, event: pg.event.Event) -> Optional[Event]:
+    async def on_key_down(self, event: pg.event.Event) -> Event | None:
         if event.key == pg.K_a:
             print("auto solve")
 

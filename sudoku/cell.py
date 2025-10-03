@@ -79,5 +79,5 @@ class Cell:
     def __repr__(self) -> str:
         return f"Cell(position={self.position}, value={self._value!r}, hopeful={self.hopeful}, futile={self.futile}, )"
 
-    def __lt__(self, other: "Cell") -> bool:
+    def __lt__(self, other: Cell) -> bool:
         return self.position.as_int() < other.position.as_int()
