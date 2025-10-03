@@ -1,7 +1,10 @@
-from typing import NamedTuple
+from __future__ import annotations
 
+from typing import NamedTuple, TypeAlias
 
-CellValue = int  # Literal[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+CellValue: TypeAlias = (
+    int  # Could be Literal[0, 1, 2, 3, 4, 5, 6, 7, 8, 9] for stricter typing
+)
 
 
 class CellPosition(NamedTuple):
@@ -42,7 +45,7 @@ class CellPosition(NamedTuple):
         return self.x
 
     @staticmethod
-    def from_int(value) -> "CellPosition":
+    def from_int(value: int) -> "CellPosition":
         """
         return a new `CellPosition` object with the corresponding x and y coordinates
         For each value from 0 to 80 it will be guaranteed `as_int` will return the same value.
@@ -51,7 +54,7 @@ class CellPosition(NamedTuple):
         y = value // 9
         return CellPosition(x, y)
 
-    def as_int(self):
+    def as_int(self) -> int:
         """
         translates the x and y coordinates to an interger from 0 to 80
             - 0 is the first cell of the first row, or top left Cell

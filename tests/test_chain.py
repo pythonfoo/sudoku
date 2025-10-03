@@ -1,10 +1,10 @@
-from sudoku.chain import Chain
-
 import pytest
 
+from sudoku.chain import Chain
 
-def test_construct_chain():
-    c = Chain()
+
+def test_construct_chain() -> None:
+    c: Chain[int] = Chain()
     x, y, z = 1, 2, 3
     c.add_pair(x, y)
 

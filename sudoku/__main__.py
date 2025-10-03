@@ -17,7 +17,8 @@
 # # print(field)
 
 
-# from .pg_gui.game import main
-from .text_ui.game import main
+from .pg_gui.game import main
+
+# from .text_ui.game import main
 
 main()
