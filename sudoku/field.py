@@ -5,7 +5,7 @@ import random
 from collections import defaultdict
 from itertools import combinations
 from pathlib import Path
-from typing import Callable, Generator, NamedTuple, cast
+from typing import Any, Callable, Generator, NamedTuple, cast
 
 import wrapt
 
@@ -34,9 +34,14 @@ class Action(NamedTuple):
     reason: str
 
 
-def check_generator(checks=range(9)):
+def check_generator(checks: range = range(9)) -> Callable[..., Any]:
     @wrapt.decorator
-    def my_decorator(wrapped, instance, args, kwargs):
+    def my_decorator(
+        wrapped: Callable[..., Generator[Any, None, None]],
+        instance: Any,
+        args: list[Any],
+        kwargs: dict[str, Any],
+    ) -> Generator[Any, None, None]:
         self = instance
         self = self
         for check in checks:
@@ -46,16 +51,24 @@ def check_generator(checks=range(9)):
 
 
 def multi_group_generator(
-    group_types=["rows", "columns"],
-):
+    group_types: list[str] | None = None,
+) -> Callable[..., Any]:
+    if group_types is None:
+        group_types = ["rows", "columns"]
+
     @wrapt.decorator
-    def my_decorator(wrapped, instance, args, kwargs):
-        nonlocal group_types
+    def my_decorator(
+        wrapped: Callable[..., Generator[Any, None, None]],
+        instance: Any,
+        args: list[Any],
+        kwargs: dict[str, Any],
+    ) -> Generator[Any, None, None]:
+        local_group_types = group_types
         self = instance
 
-        random.shuffle(group_types)
+        random.shuffle(local_group_types)
 
-        for type in group_types:
+        for type in local_group_types:
             groups = [self.get_group(type[:-1], idx) for idx in range(9)]
             yield from wrapped(type=type, groups=groups, **kwargs)
 
@@ -63,14 +76,22 @@ def multi_group_generator(
 
 
 def group_generator(
-    group_types=["row", "column", "block"], indices=[0, 1, 2, 3, 4, 5, 6, 7, 8]
-):
+    group_types: list[str] | None = None, indices: list[int] | None = None
+) -> Callable[..., Any]:
+    if group_types is None:
+        group_types = ["row", "column", "block"]
+    if indices is None:
+        indices = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+
     @wrapt.decorator
     def my_decorator(
-        wrapped: Callable[..., Generator], instance: Field, args: list, kwargs: dict
-    ) -> Generator:
-        nonlocal group_types
-        nonlocal indices
+        wrapped: Callable[..., Generator[Any, None, None]],
+        instance: "Field",
+        args: list[Any],
+        kwargs: dict[str, Any],
+    ) -> Generator[Any, None, None]:
+        local_group_types = group_types
+        local_indices = indices
         self = instance
 
         if "group" in kwargs:
@@ -81,20 +102,20 @@ def group_generator(
             )
             return
         if "group_types" in kwargs:
-            group_types = list(kwargs.pop("group_types"))
+            local_group_types = list(kwargs.pop("group_types"))
         elif "group_type" in kwargs:
-            group_types = [kwargs.pop("group_type")]
+            local_group_types = [kwargs.pop("group_type")]
 
         if "indices" in kwargs:
-            indices = list(kwargs.pop("indices"))
+            local_indices = list(kwargs.pop("indices"))
         elif "idx" in kwargs:
-            indices = [kwargs.pop("idx")]
+            local_indices = [kwargs.pop("idx")]
 
-        random.shuffle(group_types)
-        random.shuffle(indices)
+        random.shuffle(local_group_types)
+        random.shuffle(local_indices)
 
-        for type in group_types:
-            for idx in indices:
+        for type in local_group_types:
+            for idx in local_indices:
                 group = self.get_group(type, idx)
                 yield from wrapped(type=type, idx=idx, group=group, **kwargs)
 
@@ -116,28 +137,28 @@ class Field:
         "block",
     )
 
-    def __init__(self, cell_string: str):
-        self.cells = [
+    def __init__(self, cell_string: str) -> None:
+        self.cells: list[Cell] = [
             Cell(value=int(value), position=CellPosition.from_int(position))
             for position, value in enumerate(
                 filter(lambda x: "0" <= x <= "9", cell_string)
             )
         ]
 
-    def get_cell(self, x, y):
+    def get_cell(self, x: int, y: int) -> Cell:
         """
         returns the Cell with the given x and y coordinate.
         """
         index = x + 9 * y
         return self.cells[index]
 
-    def set_cell(self, x, y, value):
+    def set_cell(self, x: int, y: int, value: CellValue) -> None:
         """
         Sets the value of a cell with the given x and y coordinate.
         """
         self.get_cell(x, y).value = value
 
-    def get_group(self, type, idx):
+    def get_group(self, type: str, idx: int) -> set[Cell]:
         """
         returns a set of cells of the same group.
 
@@ -152,7 +173,9 @@ class Field:
         return {cell for cell in self.cells if test(cell, idx)}
 
     @group_generator()
-    def show_possibles(self, *, type, idx, group):
+    def show_possibles(
+        self, *, type: str, idx: int, group: set[Cell]
+    ) -> Generator[Action, None, None]:
         for member in group:
             if member.value == 0:
                 continue
@@ -168,8 +191,10 @@ class Field:
                     )
 
     @group_generator()
-    def naked_pairs(self, *, type, idx, group):
-        pairs = defaultdict(list)
+    def naked_pairs(
+        self, *, type: str, idx: int, group: set[Cell]
+    ) -> Generator[Action, None, None]:
+        pairs: defaultdict[tuple[int, ...], list[Cell]] = defaultdict(list)
         for member in group:
             if len(member.hopeful) == 2:
                 pairs[tuple(sorted(member.hopeful))].append(member)
@@ -189,8 +214,10 @@ class Field:
                         )
 
     @group_generator()
-    def naked_triples(self, *, type, idx, group):
-        triples = defaultdict(list)
+    def naked_triples(
+        self, *, type: str, idx: int, group: set[Cell]
+    ) -> Generator[Action, None, None]:
+        triples: defaultdict[tuple[int, ...], list[Cell]] = defaultdict(list)
         for member in group:
             if len(member.hopeful) == 3:
                 triples[tuple(sorted(member.hopeful))].append(member)
@@ -216,8 +243,10 @@ class Field:
                         )
 
     @group_generator()
-    def hidden_pairs(self, *, type, idx, group):
-        pairs = defaultdict(set)
+    def hidden_pairs(
+        self, *, type: str, idx: int, group: set[Cell]
+    ) -> Generator[Action, None, None]:
+        pairs: defaultdict[int, set[Cell]] = defaultdict(set)
         for member in group:
             for possible in member.hopeful:
                 pairs[possible].add(member)
@@ -247,8 +276,10 @@ class Field:
                             )
 
     @group_generator()
-    def hidden_tripples(self, *, type, idx, group):
-        tripples = defaultdict(set)
+    def hidden_tripples(
+        self, *, type: str, idx: int, group: set[Cell]
+    ) -> Generator[Action, None, None]:
+        tripples: defaultdict[int, set[Cell]] = defaultdict(set)
         for member in group:
             for possible in member.hopeful:
                 tripples[possible].add(member)
@@ -275,7 +306,9 @@ class Field:
                     )
 
     @group_generator()
-    def solved(self, *, type, idx, group):
+    def solved(
+        self, *, type: str, idx: int, group: set[Cell]
+    ) -> Generator[Action, None, None]:
         for member in group:
             if len(member.hopeful) == 1:
                 value = list(member.hopeful)[0]
@@ -287,8 +320,10 @@ class Field:
                 )
 
     @group_generator()
-    def singles(self, *, type, idx, group):
-        possibilities = defaultdict(list)
+    def singles(
+        self, *, type: str, idx: int, group: set[Cell]
+    ) -> Generator[Action, None, None]:
+        possibilities: defaultdict[int, list[Cell]] = defaultdict(list)
         for member in group:
             for possible_number in member.hopeful:
                 possibilities[possible_number].append(member)
@@ -303,8 +338,10 @@ class Field:
             )
 
     @group_generator(group_types=["block"])
-    def pointing_pairs(self, *, type, idx, group):
-        possibilities = defaultdict(list)
+    def pointing_pairs(
+        self, *, type: str, idx: int, group: set[Cell]
+    ) -> Generator[Action, None, None]:
+        possibilities: defaultdict[int, list[Cell]] = defaultdict(list)
         for member in group:
             for possible_number in member.hopeful:
                 possibilities[possible_number].append(member)
@@ -328,8 +365,10 @@ class Field:
                         )
 
     @group_generator(group_types=["row", "column"])
-    def box_line_reduction(self, *, type, idx, group):
-        possibilities = defaultdict(list)
+    def box_line_reduction(
+        self, *, type: str, idx: int, group: set[Cell]
+    ) -> Generator[Action, None, None]:
+        possibilities: defaultdict[int, list[Cell]] = defaultdict(list)
         for member in group:
             for possible_number in member.hopeful:
                 possibilities[possible_number].append(member)
@@ -350,8 +389,10 @@ class Field:
                     )
 
     @multi_group_generator()
-    def xwing(self, *, type, groups):
-        def decide_x_or_y(type):
+    def xwing(
+        self, *, type: str, groups: list[set[Cell]]
+    ) -> Generator[Action, None, None]:
+        def decide_x_or_y(type: str) -> str:
             match type:
                 case "rows":
                     return "x"
@@ -362,7 +403,7 @@ class Field:
                         f"type was {type} but can only be `row` or `column`"
                     )
 
-        def opposite_group(type):
+        def opposite_group(type: str) -> str:
             match type:
                 case "rows":
                     return "column"
@@ -423,9 +464,9 @@ class Field:
         yield from ()
 
     @check_generator()
-    def single_chains(self, check):
+    def single_chains(self, check: int) -> Generator[Action, None, None]:
         # https://www.sudokuwiki.org/Singles_Chains
-        chains = Chain()
+        chains: Chain[Cell] = Chain()
         for group in self._groups:
             for idx in range(9):
                 possible_cells = [
@@ -455,14 +496,14 @@ class Field:
 
         yield from ()
 
-    def apply(self, action):
+    def apply(self, action: Action) -> None:
         if action.action == "remove_possible":
             action.cell.hopeful -= {action.value}
-            action.cell._debug.append(action.reason)
+            action.cell._debug.append((action.value, action.reason))
         elif action.action == "set_number":
             action.cell.value = action.value
 
-    def save(self, path: Path):
+    def save(self, path: Path) -> None:
         cells = [
             json.dumps(
                 dict(
@@ -475,7 +516,7 @@ class Field:
         ]
         path.write_text("\n".join(cells))
 
-    def load(self, path: Path):
+    def load(self, path: Path) -> None:
         cell_definition_lookup = dict()
         for cell_line in path.read_text().splitlines():
             cell_definiton = json.loads(cell_line)

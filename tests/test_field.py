@@ -2,24 +2,25 @@ from pathlib import Path
 from typing import List, NamedTuple
 
 import pytest
+
 from sudoku.field import Field
 
 
 class DCell(NamedTuple):
     position: int
-    hopeful: List[int]
+    hopeful: set[int]
     value: int = 0
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return self.position
 
 
-def test_field():
+def test_field() -> None:
     f = Field("asdf123reaf213")
-    def f
+    assert len(f.cells) == 81
 
 
-def test_single():
+def test_single() -> None:
     f = Field("")
     group = [
         DCell(hopeful={1, 2, 3, 4, 5}, position=1),
@@ -29,8 +30,9 @@ def test_single():
     actions = list(
         sorted(
             f.singles(
-                group=set(group),
+                type="test",
                 idx=1,
+                group=set(group),
             )
         )
     )
@@ -39,7 +41,7 @@ def test_single():
     assert actions[0].value == 1
 
 
-def test_solved():
+def test_solved() -> None:
     f = Field("")
     group = [
         DCell(hopeful={1, 2, 3, 4, 5}, position=1),
@@ -49,8 +51,9 @@ def test_solved():
     actions = list(
         sorted(
             f.solved(
-                group=set(group),
+                type="test",
                 idx=1,
+                group=set(group),
             )
         )
     )
@@ -59,7 +62,7 @@ def test_solved():
     assert actions[0].value == 2
 
 
-def test_show_possibles():
+def test_show_possibles() -> None:
     f = Field("")
     group = [
         DCell(hopeful={1, 2, 3, 4, 5}, position=1),
@@ -70,8 +73,9 @@ def test_show_possibles():
     actions = list(
         sorted(
             f.show_possibles(
-                group=set(group),
+                type="test",
                 idx=1,
+                group=set(group),
             )
         )
     )
@@ -81,7 +85,7 @@ def test_show_possibles():
     assert actions[0].value == 3
 
 
-def test_naked_pairs():
+def test_naked_pairs() -> None:
     f = Field("")
     group = [
         DCell(hopeful={1, 2, 3, 4, 5}, position=1),
@@ -95,8 +99,9 @@ def test_naked_pairs():
     actions = list(
         sorted(
             f.naked_pairs(
-                group=set(group),
+                type="test",
                 idx=1,
+                group=set(group),
             )
         )
     )
@@ -107,7 +112,7 @@ def test_naked_pairs():
     assert actions[3].value == 4
 
 
-def test_naked_triples():
+def test_naked_triples() -> None:
     f = Field("")
     group = [
         DCell(hopeful={1, 2, 3, 4, 5}, position=1),
@@ -119,8 +124,9 @@ def test_naked_triples():
     actions = list(
         sorted(
             f.naked_triples(
-                group=set(group),
+                type="test",
                 idx=1,
+                group=set(group),
             )
         )
     )
@@ -132,7 +138,7 @@ def test_naked_triples():
     assert actions[2].value == 5
 
 
-def test_pointing_pairs():
+def test_pointing_pairs() -> None:
     f = Field("0" * 81)
     f.load(Path("tests/savegames/pointing_pairs.savegame"))
 
@@ -153,7 +159,7 @@ def test_pointing_pairs():
     assert actions[2].value == 2
 
 
-def test_hidden_pairs():
+def test_hidden_pairs() -> None:
     """
     identify hidden pair 6,7 in first row (idx 7 and 8)
     """
@@ -172,7 +178,7 @@ def test_hidden_pairs():
     ), "don't remove members of the hidden pair"
 
 
-def test_hidden_tripples():
+def test_hidden_tripples() -> None:
     f = Field("0" * 81)
     f.load(Path("tests/savegames/hidden_tripples.savegame"))
     actions = list(sorted(f.hidden_tripples()))
@@ -189,7 +195,7 @@ def test_hidden_tripples():
     ), "don't remove members of the hidden tripple"
 
 
-def test_box_line_reduction():
+def test_box_line_reduction() -> None:
     f = Field("0" * 81)
     f.load(Path("tests/savegames/box_line_reduction.savegame"))
     actions = list(sorted(f.box_line_reduction()))
@@ -207,7 +213,7 @@ def test_box_line_reduction():
     assert actions[0].value == 4
 
 
-def test_xwing():
+def test_xwing() -> None:
     f = Field("0" * 81)
     f.load(Path("tests/savegames/xwing.savegame"))
     actions = list(sorted(f.xwing()))
@@ -225,7 +231,7 @@ def test_xwing():
     assert actions[0].value == 7
 
 
-def test_single_chains():
+def test_single_chains() -> None:
     f = Field("0" * 81)
     f.load(Path("tests/savegames/single_chains.savegame"))
     actions = list(sorted(f.single_chains()))

@@ -1,5 +1,6 @@
 import asyncio
 import time
+from typing import Optional
 
 import pygame as pg
 
@@ -8,13 +9,13 @@ from .events import Event
 
 
 class Game:
-    def __init__(self):
+    def __init__(self) -> None:
         pg.init()
         pg.font.init()
         pg.display.set_caption("Pyond client")
-        self.screen = pg.display.set_mode((1024, 768))
-        self.running = True
-        self.stack = []
+        self.screen: pg.Surface = pg.display.set_mode((1024, 768))
+        self.running: bool = True
+        self.stack: list[View] = []
 
     async def show(self, element: View) -> None:
         if self.stack:
@@ -22,7 +23,7 @@ class Game:
         self.stack.append(element)
         await element.start()
 
-    async def setup_board(self):
+    async def setup_board(self) -> None:
         await self.show(Board(self.screen))
 
     async def update(self, dt) -> None:
@@ -55,13 +56,13 @@ class Game:
             await asyncio.sleep(0.01)
 
 
-async def amain():
+async def amain() -> None:
     g = Game()
     await g.setup_board()
     await g.main_loop()
 
 
-def main():
+def main() -> None:
     asyncio.run(amain())
 
 

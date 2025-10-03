@@ -2,7 +2,10 @@
 A Textual app to create a fully working calculator, modelled after MacOS Calculator.
 """
 
+from typing import Dict
+
 from textual.app import App
+from textual.events import Event
 from textual.views import GridView
 from textual.widgets import Button
 
@@ -24,7 +27,7 @@ class Block(GridView):
         self.mouse_over = False
 
     def on_mount(self) -> None:
-        self.buttons = {
+        self.buttons: Dict[str, Cell] = {
             "1": Cell("1"),
             "2": Cell("2"),
             "3": Cell("3"),
@@ -45,7 +48,7 @@ class Block(GridView):
 
 class Game(GridView):
     def on_mount(self) -> None:
-        self.buttons = {
+        self.buttons: Dict[str, Block] = {
             "1": Block(),
             "2": Block(),
             "3": Block(),
@@ -70,11 +73,11 @@ class GameApp(App):
     async def on_mount(self) -> None:
         await self.view.dock(Game())
 
-    async def on_load(self, event):
+    async def on_load(self, event: Event) -> None:
         await self.bind("q", "quit")
 
 
-def main():
+def main() -> None:
     GameApp.run(title="Sudoku Test", log="textual.log")
 
 

@@ -2,25 +2,27 @@ from __future__ import annotations
 
 import asyncio
 from pathlib import Path
+from typing import Any, Optional
 
 import pygame as pg
 
+from ..cell import Cell as SudokuCell
 from ..field import Field
 from .events import Event
 from .types import Surface
 from .view import View
 
-debug = {}
+debug: dict[str, Any] = {}
 
 
 class Text(View):
-    def __init__(self, surface: Surface, text):
+    def __init__(self, surface: Surface, text: str) -> None:
         super().__init__(surface)
-        self.text = text
+        self.text: str = text
         cell_size = min(self.surface.get_rect().width, self.surface.get_rect().height)
-        self.font = pg.font.SysFont("Vera", int(cell_size * 0.9))
+        self.font: pg.font.Font = pg.font.SysFont("Vera", int(cell_size * 0.9))
 
-    async def draw(self, highlight=False):
+    async def draw(self, highlight: bool = False) -> None:
         block = self.surface.get_rect()
         text_color = pg.Color("#000000")
         if highlight:
@@ -35,17 +37,17 @@ class Text(View):
 
 
 class Cell(View):
-    def __init__(self, surface: Surface, x, y, cell):
+    def __init__(self, surface: Surface, x: int, y: int, cell: SudokuCell) -> None:
         super().__init__(surface)
-        self.cell = cell
-        self.x = x
-        self.y = y
-        self.idx = 3 * y + x
+        self.cell: SudokuCell = cell
+        self.x: int = x
+        self.y: int = y
+        self.idx: int = 3 * y + x
         cell_size = min(self.surface.get_rect().width, self.surface.get_rect().height)
-        self.font = pg.font.SysFont("Vera", int(cell_size * 0.6))
-        self.sfont = pg.font.SysFont("Vera", int(cell_size * 0.2))
+        self.font: pg.font.Font = pg.font.SysFont("Vera", int(cell_size * 0.6))
+        self.sfont: pg.font.Font = pg.font.SysFont("Vera", int(cell_size * 0.2))
 
-    async def draw(self, highlight=False):
+    async def draw(self, highlight: bool = False) -> None:
         block = self.surface.get_rect()
         text_color = pg.Color("#000000")
         if highlight:
@@ -74,14 +76,14 @@ class Cell(View):
 
 
 class Block(View):
-    def __init__(self, surface: Surface, x, y, field):
+    def __init__(self, surface: Surface, x: int, y: int, field: Field) -> None:
         super().__init__(surface)
-        self.field = field
-        self.x = x
-        self.y = y
-        self.idx = 3 * y + x
-        self.font = pg.font.SysFont("Vera", 42)
-        self.cells = []
+        self.field: Field = field
+        self.x: int = x
+        self.y: int = y
+        self.idx: int = 3 * y + x
+        self.font: pg.font.Font = pg.font.SysFont("Vera", 42)
+        self.cells: list[Cell] = []
         block = surface.get_rect()
         cell_size = (block.width - 6) // 3
 
@@ -99,7 +101,7 @@ class Block(View):
                     )
                 )
 
-    async def draw(self, highlight=False):
+    async def draw(self, highlight: bool = False) -> None:
         block = self.surface.get_rect()
         text_color = pg.Color("#0000ff")
         bg_color = pg.Color("#000000")
@@ -123,9 +125,9 @@ class Block(View):
 
 
 class Board(View):
-    def __init__(self, surface: pg.surface.Surface):
+    def __init__(self, surface: pg.surface.Surface) -> None:
         super().__init__(surface)
-        self.field = Field(
+        self.field: Field = Field(
             # "800000503501007000700308210680073000009005000300004805970500680063789000150040007"
             # "000000000904607000076804100309701080008000300050308702007502610000403208000000000"
             # "000001030231090000065003100678924300103050006000136700009360570006019843300000000"
@@ -133,11 +135,11 @@ class Board(View):
             # "100000569492056108056109240009640801064010000218035604040500016905061402621000005"
             "100400006046091080005020000000500109090000050402009000000010900080930560500008004"
         )
-        self.font = pg.font.SysFont("Vera", 42)
-        self.blocks = []
-        self.cells = []
-        self.debugs = []
-        self._idx = 0
+        self.font: pg.font.Font = pg.font.SysFont("Vera", 42)
+        self.blocks: list[Block] = []
+        self.cells: list[Text] = []
+        self.debugs: list[Text] = []
+        self._idx: int = 0
         total_size = surface.get_rect()
         board_size = min(total_size.width * 2 // 3, total_size.height)
         board_top_space = total_size.height - board_size
@@ -185,7 +187,7 @@ class Board(View):
             )
         )
 
-    async def draw(self):
+    async def draw(self, highlight: bool = False) -> None:
         self.surface.fill(pg.Color("#a0a0a0"), self._board)
 
         self.board_surface.fill(
@@ -212,9 +214,9 @@ class Board(View):
                 )
                 await text.draw(highlight=False)
 
-    async def on_mouse_move(self, event): ...
+    async def on_mouse_move(self, event: pg.event.Event) -> None: ...
 
-    async def on_key_down(self, event):
+    async def on_key_down(self, event: pg.event.Event) -> Optional[Event]:
         if event.key == pg.K_a:
             print("auto solve")
 
@@ -270,6 +272,7 @@ class Board(View):
 
         if event.key in (pg.K_ESCAPE, pg.K_q):
             return Event.QUIT
+        return None
 
 
 class GameView(View): ...

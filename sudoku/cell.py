@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 from .types import CellPosition, CellValue
 
 
@@ -30,7 +29,7 @@ class Cell:
         self._value = value
 
     @property
-    def position(self):
+    def position(self) -> CellPosition:
         """
         represents the position of the cell
 
@@ -42,7 +41,7 @@ class Cell:
         return self._position
 
     @property
-    def value(self):
+    def value(self) -> CellValue:
         """
         represents the cell value
          - value is 0 when the cell is not set
@@ -61,7 +60,7 @@ class Cell:
         return self._value
 
     @value.setter
-    def value(self, value):
+    def value(self, value: CellValue) -> None:
         assert value in self.hopeful, f"Cell {self.position} can't be set to {value}"
         assert value not in self.futile, f"Cell {self.position} can't be set to {value}"
         self._value = value
@@ -74,11 +73,11 @@ class Cell:
             or self.position.column == other.position.column
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self._value}"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Cell(position={self.position}, value={self._value!r}, hopeful={self.hopeful}, futile={self.futile}, )"
 
-    def __lt__(self, other):
+    def __lt__(self, other: "Cell") -> bool:
         return self.position.as_int() < other.position.as_int()
