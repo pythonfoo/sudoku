@@ -163,7 +163,7 @@ class Board(View):
                             )
                         )
                         self.cells.append(
-                            Text(text=f"x: {3*x+i+1}", surface=cellsurface)
+                            Text(text=f"x: {3 * x + i + 1}", surface=cellsurface)
                         )
                     for i in range(3):
                         rect = pg.Rect(
@@ -174,7 +174,9 @@ class Board(View):
                         )
                         print(rect)
                         cellsurface = surface.subsurface(rect)
-                        self.cells.append(Text(text=f"{3*x+i+1}", surface=cellsurface))
+                        self.cells.append(
+                            Text(text=f"{3 * x + i + 1}", surface=cellsurface)
+                        )
                 blockrect = pg.Rect(
                     block_size * x, block_size * y, block_size, block_size
                 )

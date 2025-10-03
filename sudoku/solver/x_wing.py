@@ -46,10 +46,11 @@ def x_wing(field, *, type: str, groups: list[set[Cell]]) -> Generator[Action]:
         # print(f"look for {possible_number}")
         for possibility_tuple, cell_lookup in lookups.items():
             match type, possibility_tuple, list(cell_lookup.keys()):
-                case (
-                    ["rows", [col_a, col_b], [row_a, row_b]]
-                    | ["columns", [row_a, row_b], [col_a, col_b]]
-                ):
+                case ["rows", [col_a, col_b], [row_a, row_b]] | [
+                    "columns",
+                    [row_a, row_b],
+                    [col_a, col_b],
+                ]:
                     # case [[col_a,col_b], [row_a,row_b]]:
                     # print(f"{type} solution for {possible_number} found")
                     x_wing_id = f"{col_a},{row_a} {col_a},{row_b} {col_b},{row_a} {col_b},{row_b}"

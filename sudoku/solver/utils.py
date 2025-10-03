@@ -4,8 +4,6 @@ from typing import Any, cast
 
 import wrapt
 
-from sudoku.action import Action
-from sudoku.cell import Cell
 from sudoku.field import Field
 
 

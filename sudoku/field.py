@@ -91,8 +91,8 @@ class Field:
             cell.hopeful &= set(cell_definiton["hopeful"])
 
     def __str__(self) -> str:
-        light_row = f"+{'   +'*9}\n"
-        strong_row = f"+{'---+'*9}\n"
+        light_row = f"+{'   +' * 9}\n"
+        strong_row = f"+{'---+' * 9}\n"
         return (
             strong_row
             + strong_row.join(
@@ -101,7 +101,8 @@ class Field:
                         " | ".join(
                             "   ".join(map(str, self.cells[x : x + 3]))
                             for x in range(y * 9, (y + 1) * 9, 3)
-                        )} |\n"""
+                        )
+                    } |\n"""
                     for y in range(z * 3, (z + 1) * 3)
                 )
                 for z in range(3)

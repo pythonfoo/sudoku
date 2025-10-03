@@ -3,3 +3,7 @@ run:
 
 test *ARGS:
     uv run pytest {{ARGS}}
+
+lint:
+    uvx ruff check sudoku
+    uvx ty check sudoku
