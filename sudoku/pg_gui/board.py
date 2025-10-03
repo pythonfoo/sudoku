@@ -230,14 +230,14 @@ class Board(View):
                 for solver in all_solvers:
                     print(solver.__name__)
                     try:
-                        changes = list(solver(self.field)())
+                        changes = list(solver(self.field))
                         print(len(changes))
                         for change in changes:
                             try_again = True
                             await asyncio.sleep(0.0)  # allow UI to update
                             print(f"{change.reason}")
                             self.field.apply(change)
-                            if solver in ("solved", "singles"):
+                            if solver.__name__ in ("solved", "singles"):
                                 for change in show_possibles(self.field):
                                     self.field.apply(change)
                         if try_again:
