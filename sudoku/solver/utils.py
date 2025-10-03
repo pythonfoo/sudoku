@@ -17,8 +17,9 @@ def check_generator(checks: range = range(9)) -> Callable[..., Any]:
         args: list[Any],
         kwargs: dict[str, Any],
     ) -> Generator[Any]:
+        field = args[0]
         for check in checks:
-            yield from wrapped(check=check)
+            yield from wrapped(field, check=check)
 
     return cast(Callable[..., Generator], my_decorator)
 
@@ -42,7 +43,7 @@ def multi_group_generator(
 
         for type in local_group_types:
             groups = [field.get_group(type[:-1], idx) for idx in range(9)]
-            yield from wrapped(type=type, groups=groups, **kwargs)
+            yield from wrapped(field, type=type, groups=groups, **kwargs)
 
     return cast(Callable[..., Generator], my_decorator)
 
@@ -68,6 +69,7 @@ def group_generator(
 
         if "group" in kwargs:
             yield from wrapped(
+                field,
                 type=kwargs.get("type"),
                 idx=kwargs.get("idx"),
                 group=kwargs.get("group"),
@@ -89,6 +91,6 @@ def group_generator(
         for type in local_group_types:
             for idx in local_indices:
                 group = field.get_group(type, idx)
-                yield from wrapped(type=type, idx=idx, group=group, **kwargs)
+                yield from wrapped(field, type=type, idx=idx, group=group, **kwargs)
 
     return cast(Callable[..., Generator], my_decorator)
