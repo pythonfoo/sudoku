@@ -29,9 +29,16 @@ all_solvers = [solver for _, solver in sorted(weighted_solvers)]
 
 __all__ = [
     "all_solvers",
+    "box_line_reduction",
     "hidden_pairs",
+    "hidden_triples",
     "naked_pairs",
     "naked_triples",
+    "pointing_pairs",
     "show_possibles",
+    "single_chains",
+    "singles",
+    "solved",
+    "x_wing",
     "weighted_solvers",
 ]
