@@ -2,7 +2,6 @@ from typing import NamedTuple
 
 import pytest
 
-from sudoku.action import Action
 from sudoku.cell import Cell
 from sudoku.field import Field
 from sudoku.solver.naked_pairs import naked_pairs

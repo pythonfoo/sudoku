@@ -1,9 +1,7 @@
-from collections import defaultdict
 from typing import NamedTuple
 
 import pytest
 
-from sudoku.action import Action
 from sudoku.cell import Cell
 from sudoku.field import Field
 from sudoku.solver.singles import singles

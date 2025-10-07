@@ -8,7 +8,6 @@ from .show_possibles import show_possibles
 from .single_chains import single_chains
 from .singles import singles
 from .solved import solved
-from .utils import Action
 from .x_wing import x_wing
 
 weighted_solvers = [
@@ -29,7 +28,6 @@ weighted_solvers = [
 all_solvers = [solver for _, solver in sorted(weighted_solvers)]
 
 __all__ = [
-    "Action",
     "all_solvers",
     "hidden_pairs",
     "naked_pairs",
