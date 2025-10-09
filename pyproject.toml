@@ -19,6 +19,7 @@ dev = [
     "sphinx-autobuild",
     "pytest-watch",
     "pyright",
+    "pytest-watcher>=0.4.3",
 ]
 
 [build-system]
