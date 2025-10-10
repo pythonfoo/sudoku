@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import overload
 
 from sudoku.action import Action
 from sudoku.cell import Cell
@@ -31,11 +32,22 @@ class Field:
             )
         ]
 
-    def get_cell(self, x: int, y: int) -> Cell:
+    @overload
+    def get_cell(self, x: int, y: int) -> Cell: ...
+
+    @overload
+    def get_cell(self, x: str) -> Cell: ...
+
+    def get_cell(self, x, y=None) -> Cell:
         """
         returns the Cell with the given x and y coordinate.
         """
-        index = x + 9 * y
+        if isinstance(x, str):
+            index = CellPosition.from_sudokuwiki(x).as_int()
+        elif isinstance(x, int) and isinstance(y, int):
+            index = x + 9 * y
+        else:
+            raise ValueError("Invalid arguments for get_cell")
         return self.cells[index]
 
     def set_cell(self, x: int, y: int, value: CellValue) -> None:
@@ -99,7 +111,9 @@ class Field:
                 light_row.join(
                     f"""| {
                         " | ".join(
-                            "   ".join(map(str, self.cells[x : x + 3]))
+                            "   ".join(map(
+                                lambda c: str(c.value) if c.value != 0 else "."
+                                , self.cells[x : x + 3]))
                             for x in range(y * 9, (y + 1) * 9, 3)
                         )
                     } |\n"""

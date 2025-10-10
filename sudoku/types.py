@@ -7,13 +7,19 @@ CellValue: TypeAlias = (
 )
 
 
+def as_sudokuwiki(position: CellPosition) -> str:
+    x = "ABCDEFGHI"[position.y]
+    y = str(position.x + 1)
+    return f"{x}{y}"
+
+
 class CellPosition(NamedTuple):
     """
     `CellPosition` is class to store the position of a cell by its `x` and `y`.
     """
 
-    x: CellValue
-    y: CellValue
+    x: CellValue  # column
+    y: CellValue  # row
 
     @property
     def block(self) -> CellValue:
@@ -63,3 +69,19 @@ class CellPosition(NamedTuple):
             - 80 is the last cell of the last row, or bottom right Cell
         """
         return self.y * 9 + self.x
+
+    @classmethod
+    def from_xy(cls, x: int, y: int) -> "CellPosition":
+        return cls(x, y)
+
+    @classmethod
+    def from_sudokuwiki(cls, pos: str) -> "CellPosition":
+        y = "ABCDEFGHI".index(pos[0].upper())
+        x = int(pos[1]) - 1
+        return cls(x, y)
+
+    def as_sudokuwiki(self) -> str:
+        return as_sudokuwiki(self)
+
+    def __str__(self) -> str:
+        return as_sudokuwiki(self)
